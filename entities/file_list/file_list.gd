@@ -26,7 +26,7 @@ func set_items(new_items: Array[File]) -> void:
 		list.remove_child(child)
 		
 	for file in files:
-		var list_item_resource = preload("res://item.tscn")
+		var list_item_resource = preload("res://entities/item/item.tscn")
 		var list_item = list_item_resource.instantiate() as Item
 		
 		list_item.label = file.file_name
