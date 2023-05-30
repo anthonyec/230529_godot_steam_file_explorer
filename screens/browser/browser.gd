@@ -6,10 +6,15 @@ const ROOT_PATH = "/"
 
 @export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
 
-@onready var file_list: FileList = $FileList as FileList
+@onready var file_list: Files = %Files as Files
+@onready var go_up_button: Button = %GoUpButton as Button
 
 func _ready() -> void:
 	goto(current_path)
+	
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("back"):
+		_on_go_up_button_pressed()
 	
 func read_zip_file(path: String) -> void:
 	var reader := ZIPReader.new()
@@ -36,7 +41,7 @@ func goto(path: String) -> void:
 	current_path = path
 	
 	var files = get_directory_contents(current_path)
-	file_list.set_items(files)
+	file_list.set_files(files)
 	
 func get_parent_path(path: String) -> String:
 	var split = path.split("/")
@@ -63,7 +68,7 @@ func get_directory_contents(path: String) -> Array[File]:
 	var dir_access = DirAccess.open(path)
 	
 	if not dir_access:
-		print("Failed dir_access")
+		push_warning("Failed to access directory, could be empty.")
 		return []
 	
 	# Begin scanning directory.
@@ -85,14 +90,21 @@ func get_directory_contents(path: String) -> Array[File]:
 		file_name = dir_access.get_next()
 	
 	return contents
+	
+func _on_files_item_focused(file: File) -> void:
+	SFX.play_everywhere("highlight")
 
-func _on_file_list_file_selected(file: File) -> void:
+func _on_files_item_selected(file: File) -> void:	
 	if file.is_directory:
 		goto(get_child_path(current_path, file.file_name))
+		SFX.play_everywhere("enter")
 	else:
 		open(get_child_path(current_path, file.file_name))
+		SFX.play_everywhere("invalid")
 
-func _on_file_list_list_back() -> void:
+func _on_go_up_button_pressed() -> void:
+	SFX.play_everywhere("back")
+	
 	var new_path = get_parent_path(current_path)
 	
 	if new_path == ROOT_PATH:

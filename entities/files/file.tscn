@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://m4xss2v7ja5p"]
+
+[node name="File" type="Button"]
+custom_minimum_size = Vector2(2.08165e-12, 60)
+mouse_filter = 1
+text = "File name"
+alignment = 0

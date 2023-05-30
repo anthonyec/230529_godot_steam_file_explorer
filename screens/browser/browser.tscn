@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://onmjvt76lhbg"]
+
+[ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
+[ext_resource type="PackedScene" uid="uid://c8pnmrwaxq4lq" path="res://entities/files/files.tscn" id="2_wu4yh"]
+
+[node name="Browser" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_pf074")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoUpButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Go up"
+
+[node name="Files" parent="VBoxContainer" instance=ExtResource("2_wu4yh")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="pressed" from="VBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
+[connection signal="item_focused" from="VBoxContainer/Files" to="." method="_on_files_item_focused"]
+[connection signal="item_selected" from="VBoxContainer/Files" to="." method="_on_files_item_selected"]
