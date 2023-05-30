@@ -13,6 +13,10 @@ func _ready() -> void:
 	goto(current_path)
 	
 func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("enter"):
+		var focused_file = file_list.get_focused_file()
+		_on_files_item_selected(focused_file)
+
 	if Input.is_action_just_pressed("back"):
 		_on_go_up_button_pressed()
 	
@@ -29,6 +33,14 @@ func read_zip_file(path: String) -> void:
 	
 	reader.close()
 
+func sort_files_by_kind(file_a: File, file_b: File) -> bool:
+	if file_a.is_directory and not file_b.is_directory:
+		return true
+		
+	return false
+	
+func sort_files_by_alphabetical(file_a: File, file_b: File) -> bool:
+	return file_a.file_name < file_b.file_name
 	
 func open(path: String) -> void:
 	var extension = path.get_extension()
@@ -41,6 +53,8 @@ func goto(path: String) -> void:
 	current_path = path
 	
 	var files = get_directory_contents(current_path)
+	
+	files.sort_custom(sort_files_by_alphabetical)
 	file_list.set_files(files)
 	
 func get_parent_path(path: String) -> String:
@@ -94,7 +108,7 @@ func get_directory_contents(path: String) -> Array[File]:
 func _on_files_item_focused(file: File) -> void:
 	SFX.play_everywhere("highlight")
 
-func _on_files_item_selected(file: File) -> void:	
+func _on_files_item_selected(file: File) -> void:
 	if file.is_directory:
 		goto(get_child_path(current_path, file.file_name))
 		SFX.play_everywhere("enter")

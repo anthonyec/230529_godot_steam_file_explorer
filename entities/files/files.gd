@@ -48,6 +48,9 @@ func get_files() -> Array[File]:
 func get_first_item() -> Button:
 	return list.get_child(0) as Button
 	
+func get_focused_file() -> File:
+	return files[focused]
+	
 func scroll_into_view(item: Button) -> void:
 	var item_rect = item.get_rect()
 	var item_screen_position = item.get_screen_position()

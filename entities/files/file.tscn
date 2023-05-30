@@ -3,5 +3,6 @@
 [node name="File" type="Button"]
 custom_minimum_size = Vector2(2.08165e-12, 60)
 mouse_filter = 1
+theme_override_font_sizes/font_size = 18
 text = "File name"
 alignment = 0
