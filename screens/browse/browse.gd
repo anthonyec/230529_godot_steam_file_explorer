@@ -9,9 +9,28 @@ const ROOT_PATH = "/"
 @onready var file_list: FileList = $FileList as FileList
 
 func _ready() -> void:
-	var files = get_directory_contents(current_path)
+	goto(current_path)
 	
-	file_list.set_items(files)
+func read_zip_file(path: String) -> void:
+	var reader := ZIPReader.new()
+	var error := reader.open(path)
+	
+	if error != OK:
+		return PackedByteArray()
+	
+	var files = reader.get_files()
+	
+	print(files)
+	
+	reader.close()
+
+	
+func open(path: String) -> void:
+	var extension = path.get_extension()
+	
+	if extension == "zip":
+		read_zip_file(path)
+		print("Extract?")
 	
 func goto(path: String) -> void:
 	current_path = path
@@ -70,6 +89,8 @@ func get_directory_contents(path: String) -> Array[File]:
 func _on_file_list_file_selected(file: File) -> void:
 	if file.is_directory:
 		goto(get_child_path(current_path, file.file_name))
+	else:
+		open(get_child_path(current_path, file.file_name))
 
 func _on_file_list_list_back() -> void:
 	var new_path = get_parent_path(current_path)
