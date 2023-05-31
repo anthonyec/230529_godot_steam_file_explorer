@@ -1,15 +1,16 @@
 extends Node
 
-var queue: Array[String] = []
-var is_processing_queue: bool = false
+class QueueItem:
+	var path: String
+	var callback: Callable
 
+var queue: Array[QueueItem] = []
+var is_processing_queue: bool = false
 var should_terminate_threads: bool = false
 
 var mutex: Mutex
-
 var check_thread: Thread
 var process_thread: Thread
-
 var check_semaphore: Semaphore
 var process_semaphore: Semaphore
 
@@ -66,18 +67,21 @@ func process_queue_thread() -> void:
 		
 		mutex.lock()
 		
-		var index = queue.size() - 1
+		var index = 0
 		
-		while index > -1:
+		while index < queue.size():
 			if should_terminate_threads: break
 				
-			var path = queue[index]
+			var queue_item = queue[index]
+			var path = queue_item.path
+			var callback = queue_item.callback
 			
 			debug_log("process: " + path)
-			generate_thumbnail(path)
+			var generated_thumbnail = generate_thumbnail(path)
+			callback.call(generated_thumbnail)
 		
 			queue.remove_at(index)
-			index -= 1;
+			index += 1;
 			
 		mutex.unlock()
 		check_semaphore.post()
@@ -90,8 +94,14 @@ func get_thumbnail_name(path: String) -> String:
 func get_thumbnail_image_path(path: String) -> String:
 	return "user://thumbnails/" + get_thumbnail_name(path)
 
-func get_thumbnail(path: String) -> Image:
-	queue.append(path)
+func get_thumbnail(path: String, callback: Callable) -> Image:
+	var queue_item = QueueItem.new()
+	
+	queue_item.path = path
+	queue_item.callback = callback
+	
+	queue.append(queue_item)
+	
 	return Image.new()
 
 func generate_thumbnail(path: String) -> Image:
@@ -99,9 +109,7 @@ func generate_thumbnail(path: String) -> Image:
 
 	if existing_thumbnail != null:
 		var existing_thumbail_image = Image.new()
-
 		existing_thumbail_image.load(get_thumbnail_image_path(path))
-
 		return existing_thumbail_image
 	
 	var image = Image.new()

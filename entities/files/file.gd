@@ -14,8 +14,9 @@ func _ready() -> void:
 	text = file.file_name
 	
 	if file.extension == "png":
-		var thumbnail_image = Thumbnails.get_thumbnail(file.path)
-		var thumbnail_texture = ImageTexture.create_from_image(thumbnail_image)
+		Thumbnails.get_thumbnail(file.path, func(path): 
+			var thumbnail_texture = ImageTexture.create_from_image(path)
+			icon = thumbnail_texture
+		)
 		
-		icon = thumbnail_texture
 	
