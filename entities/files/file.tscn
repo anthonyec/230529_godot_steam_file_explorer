@@ -8,15 +8,46 @@
 [node name="File" type="Button"]
 custom_minimum_size = Vector2(200, 60)
 mouse_filter = 1
-theme_override_constants/h_separation = 15
-theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = ExtResource("1_tn1yj")
 theme_override_styles/hover = ExtResource("1_tn1yj")
 theme_override_styles/pressed = ExtResource("1_tn1yj")
 theme_override_styles/disabled = ExtResource("1_tn1yj")
 theme_override_styles/focus = ExtResource("2_82klv")
-text = "File name"
-icon = ExtResource("1_4316j")
 alignment = 0
 text_overrun_behavior = 3
 script = ExtResource("4_pq40v")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 60)
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("1_4316j")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "File name"
+text_overrun_behavior = 3

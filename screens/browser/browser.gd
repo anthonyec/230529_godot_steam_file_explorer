@@ -8,6 +8,9 @@ const ROOT_PATH = "/"
 
 @onready var file_list: Files = %Files as Files
 @onready var go_up_button: Button = %GoUpButton as Button
+@onready var title_label: Label = %Title as Label
+@onready var path_label: Label = %Path as Label
+@onready var count_label: Label = %Count as Label
 
 func _ready() -> void:
 	goto(current_path)
@@ -52,8 +55,13 @@ func open(path: String) -> void:
 func goto(path: String) -> void:
 	current_path = path
 	
+	var title = current_path.get_file()
 	var files = get_directory_contents(current_path)
+	var count = files.size()
 	
+	title_label.text = title
+	path_label.text = path
+	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
 	file_list.set_files(files)
 	
@@ -81,6 +89,8 @@ func get_child_path(path: String, child_path: String) -> String:
 func get_directory_contents(path: String) -> Array[File]:
 	var dir_access = DirAccess.open(path)
 	
+#	dir_access.include_hidden = true
+	
 	if not dir_access:
 		push_warning("Failed to access directory, could be empty.")
 		return []
@@ -107,13 +117,35 @@ func get_directory_contents(path: String) -> Array[File]:
 	
 	return contents
 	
+func into_animation(reverse: bool = false) -> Signal:
+	var tween = get_tree().create_tween()
+	
+	tween.set_parallel(true)
+	tween.tween_property(file_list, "scale", Vector2(1.1, 1.1), 0.2).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(file_list, "modulate", Color(1, 1, 1, 0), 0.2).set_trans(Tween.TRANS_SINE)
+
+	return tween.finished
+	
+func outo_animation(reverse: bool = false) -> Signal:
+	var tween = get_tree().create_tween()
+
+	tween.set_parallel(true)
+	tween.tween_property(file_list, "scale", Vector2(1, 1), 0.2).from(Vector2(0.9, 0.9)).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(file_list, "modulate", Color(1, 1, 1, 1), 0.2).from(Color(1, 1, 1, 0)).set_trans(Tween.TRANS_SINE)
+	
+	return tween.finished
+	
 func _on_files_item_focused(file: File) -> void:
 	SFX.play_everywhere("highlight")
 
 func _on_files_item_selected(file: File) -> void:
 	if file.is_directory:
-		goto(get_child_path(current_path, file.file_name))
 		SFX.play_everywhere("enter")
+		
+		await into_animation()
+		goto(get_child_path(current_path, file.file_name))
+		await outo_animation()
+		
 	else:
 		open(get_child_path(current_path, file.file_name))
 		SFX.play_everywhere("invalid")
@@ -126,4 +158,6 @@ func _on_go_up_button_pressed() -> void:
 	if new_path == ROOT_PATH:
 		return
 	
+	await into_animation(true)
 	goto(new_path)
+	await outo_animation(true)

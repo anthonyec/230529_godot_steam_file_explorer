@@ -135,7 +135,7 @@ func generate_thumbnail(path: String) -> Image:
 	if thumbnail_image == null:
 		push_warning("Failed to open thumbnails file for: ", path)
 		return
-		
+	
 	thumbnail_image.store_buffer(image.save_png_to_buffer())
 	thumbnail_image.close()
 	
