@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://entities/files/file.gd" id="4_pq40v"]
 
 [node name="File" type="Button"]
-custom_minimum_size = Vector2(2.08165e-12, 60)
+custom_minimum_size = Vector2(200, 60)
 mouse_filter = 1
 theme_override_constants/h_separation = 15
 theme_override_font_sizes/font_size = 18
@@ -18,4 +18,5 @@ theme_override_styles/focus = ExtResource("2_82klv")
 text = "File name"
 icon = ExtResource("1_4316j")
 alignment = 0
+text_overrun_behavior = 3
 script = ExtResource("4_pq40v")
