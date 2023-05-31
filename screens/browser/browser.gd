@@ -4,7 +4,7 @@ extends Control
 const DELIMITER = "/"
 const ROOT_PATH = "/"
 
-@export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
+@export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder" 
 
 @onready var file_list: Files = %Files as Files
 @onready var go_up_button: Button = %GoUpButton as Button
@@ -95,6 +95,8 @@ func get_directory_contents(path: String) -> Array[File]:
 		var new_file = File.new()
 		
 		new_file.file_name = file_name
+		new_file.extension = file_name.get_extension()
+		new_file.path = dir_access.get_current_dir() + DELIMITER + file_name
 		new_file.is_directory = dir_access.current_is_dir()
 		
 		# Add file to list.

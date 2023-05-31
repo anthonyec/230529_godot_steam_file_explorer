@@ -17,12 +17,14 @@ sfx/sounds="res://audio"
 config/name="230529_godot_steam_file_explorer"
 run/main_scene="res://screens/browser/browser.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
+run/low_processor_mode=true
 boot_splash/bg_color=Color(0, 0, 0, 1)
 boot_splash/show_image=false
 
 [autoload]
 
 SFX="*res://addons/anthonyec.sfx/sfx.gd"
+Thumbnails="*res://globals/thumbnails/thumbnails.gd"
 
 [display]
 

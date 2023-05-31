@@ -29,9 +29,10 @@ func set_files(new_files: Array[File]) -> void:
 	# Create a new list.
 	for index in files.size():
 		var file = files[index]
-		var item = item_resource.instantiate() as Button
+		var item = item_resource.instantiate() as FileItem
 		
-		item.text = file.file_name
+		item.file = file
+		
 		item.connect("focus_entered", _on_item_focused.bind(index, file, item))
 		item.connect("pressed", _on_item_pressed.bind(file))
 		
