@@ -1,4 +1,7 @@
+class_name Browser
 extends Control
+
+signal open_file(path: String)
 
 # TODO: Make dynamic to handle Windows?? : (
 const DELIMITER = "/"
@@ -46,11 +49,7 @@ func sort_files_by_alphabetical(file_a: File, file_b: File) -> bool:
 	return file_a.file_name < file_b.file_name
 	
 func open(path: String) -> void:
-	var extension = path.get_extension()
-	
-	if extension == "zip":
-		read_zip_file(path)
-		print("Extract?")
+	open_file.emit(path)
 	
 func goto(path: String) -> void:
 	current_path = path

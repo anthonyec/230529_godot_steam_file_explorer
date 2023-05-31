@@ -20,8 +20,8 @@ func _ready() -> void:
 	label.text = file.file_name
 	
 	if file.extension == "png" or file.extension == "jpg" or file.extension == "jpeg":
-		Thumbnails.get_thumbnail(file.path, func(path): 
-			var thumbnail_texture = ImageTexture.create_from_image(path)
+		Thumbnails.get_thumbnail(file.path, func(image): 
+			var thumbnail_texture = ImageTexture.create_from_image(image)
 			icon_texture.texture = thumbnail_texture
 		)
 	
