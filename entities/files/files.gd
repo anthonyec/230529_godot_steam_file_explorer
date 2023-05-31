@@ -4,8 +4,8 @@ extends Control
 signal item_focused(file: File)
 signal item_selected(file: File)
 
-@onready var scroll_container: ScrollContainer = $ScrollContainer
-@onready var list: VBoxContainer = $ScrollContainer/List
+@onready var scroll_container: ScrollContainer = %ScrollContainer
+@onready var list: VBoxContainer = %List
 
 var item_resource: Resource = preload("res://entities/files/file.tscn")
 var empty_state_resource: Resource = preload("res://entities/files/empty_state.tscn")

@@ -1,8 +1,21 @@
-[gd_scene format=3 uid="uid://m4xss2v7ja5p"]
+[gd_scene load_steps=5 format=3 uid="uid://m4xss2v7ja5p"]
+
+[ext_resource type="Texture2D" uid="uid://0g174k6kdbwp" path="res://entities/files/folder_icon.tres" id="1_4316j"]
+[ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://entities/files/button_style_normal.tres" id="1_tn1yj"]
+[ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://entities/files/button_style_focus.tres" id="2_82klv"]
+[ext_resource type="Script" path="res://entities/files/file.gd" id="4_pq40v"]
 
 [node name="File" type="Button"]
 custom_minimum_size = Vector2(2.08165e-12, 60)
 mouse_filter = 1
+theme_override_constants/h_separation = 15
 theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = ExtResource("1_tn1yj")
+theme_override_styles/hover = ExtResource("1_tn1yj")
+theme_override_styles/pressed = ExtResource("1_tn1yj")
+theme_override_styles/disabled = ExtResource("1_tn1yj")
+theme_override_styles/focus = ExtResource("2_82klv")
 text = "File name"
+icon = ExtResource("1_4316j")
 alignment = 0
+script = ExtResource("4_pq40v")
