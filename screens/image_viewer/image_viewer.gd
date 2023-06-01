@@ -3,6 +3,7 @@ extends Screen
 @onready var texture_rect: TextureRect = %TextureRect as TextureRect
 
 func _ready() -> void:
+	super()
 	$Panel/CloseButton.grab_focus()
 
 func open(path: String) -> void:

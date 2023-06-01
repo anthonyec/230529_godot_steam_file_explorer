@@ -16,6 +16,7 @@ const ROOT_PATH = "/"
 @onready var count_label: Label = %Count as Label
 
 func _ready() -> void:
+	super()
 	goto(current_path)
 	connect("visibility_changed", _on_visiblity_changed)
 	
@@ -107,10 +108,12 @@ func get_directory_contents(path: String) -> Array[File]:
 		
 	while file_name != "":
 		var new_file = File.new()
+		var full_path = dir_access.get_current_dir() + DELIMITER + file_name
 		
+		new_file.id = full_path.md5_text()
 		new_file.file_name = file_name
 		new_file.extension = file_name.get_extension()
-		new_file.path = dir_access.get_current_dir() + DELIMITER + file_name
+		new_file.path = full_path
 		new_file.is_directory = dir_access.current_is_dir()
 		
 		# Add file to list.

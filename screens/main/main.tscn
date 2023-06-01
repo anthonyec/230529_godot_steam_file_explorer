@@ -14,8 +14,6 @@ script = ExtResource("1_mxl15")
 
 [node name="Browser" parent="." instance=ExtResource("1_qd2qa")]
 unique_name_in_owner = true
-layout_mode = 1
-offset_top = -1.0
-offset_bottom = -1.0
+position = Vector2i(50, 50)
 
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]

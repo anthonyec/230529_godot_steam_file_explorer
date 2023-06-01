@@ -12,6 +12,7 @@ class Extraction:
 	signal error
 
 func _ready() -> void:
+	super()
 	$Panel/CloseButton.grab_focus()
 
 func open(path: String) -> void:

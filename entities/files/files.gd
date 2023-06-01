@@ -10,7 +10,8 @@ signal item_selected(file: File)
 var item_resource: Resource = preload("res://entities/files/file.tscn")
 var empty_state_resource: Resource = preload("res://entities/files/empty_state.tscn")
 
-var focused: int = 0
+var focused_index: int
+var focused_file: File
 var files: Array[File] = []
 
 func set_files(new_files: Array[File]) -> void:
@@ -27,17 +28,26 @@ func set_files(new_files: Array[File]) -> void:
 		list.add_child(empty_state)
 		return
 	
+	var found_focused_item: FileItem = null
+	
 	# Create a new list.
 	for index in files.size():
 		var file = files[index]
 		var item = item_resource.instantiate() as FileItem
 		
 		item.file = file
+		item.file.index = index
 		
 		item.connect("focus_entered", _on_item_focused.bind(index, file, item))
 		item.connect("pressed", _on_item_pressed.bind(file))
-		
 		list.add_child(item)
+		
+		if focused_file and file.id == focused_file.id:
+			found_focused_item = item
+
+	if found_focused_item:
+		found_focused_item.grab_focus()
+		return
 		
 	var first_item = get_first_item()
 	
@@ -51,7 +61,7 @@ func get_first_item() -> Button:
 	return list.get_child(0) as Button
 	
 func get_focused_file() -> File:
-	return files[focused]
+	return files[focused_index]
 	
 func scroll_into_view(item: Button) -> void:
 	var item_rect = item.get_rect()
@@ -73,7 +83,8 @@ func scroll_into_view(item: Button) -> void:
 			.set_trans(Tween.TRANS_CIRC)
 
 func _on_item_focused(index: int, file: File, item: Button) -> void:
-	focused = index
+	focused_index = index
+	focused_file = file
 	item_focused.emit(file)
 	scroll_into_view(item)
 	
