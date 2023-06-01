@@ -17,6 +17,7 @@ const ROOT_PATH = "/"
 
 func _ready() -> void:
 	goto(current_path)
+	connect("visibility_changed", _on_visiblity_changed)
 	
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("enter"):
@@ -25,6 +26,10 @@ func _process(_delta: float) -> void:
 
 	if Input.is_action_just_pressed("back"):
 		_on_go_up_button_pressed()
+		
+func _on_visiblity_changed() -> void:
+	if visible:
+		goto(current_path)
 	
 func read_zip_file(path: String) -> void:
 	var reader := ZIPReader.new()

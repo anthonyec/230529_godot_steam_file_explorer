@@ -1,0 +1,70 @@
+[gd_scene load_steps=2 format=3 uid="uid://xek67hd2laxu"]
+
+[ext_resource type="Script" path="res://screens/archive_extractor/archive_extractor.gd" id="1_uupk6"]
+
+[node name="ArchiveExtractor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uupk6")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 469.0
+offset_top = 69.0
+offset_right = 670.0
+offset_bottom = 117.0
+theme_override_font_sizes/font_size = 32
+text = "ZIP Extractor"
+
+[node name="CloseButton" type="Button" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 44.0
+offset_top = 18.0
+offset_right = 94.0
+offset_bottom = 49.0
+text = "Close
+"
+
+[node name="ExtractButton" type="Button" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 67.0
+offset_top = 127.0
+offset_right = 117.0
+offset_bottom = 158.0
+text = "Extract!"
+
+[node name="TextureRect" type="TextureRect" parent="Panel"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 500)
+layout_mode = 0
+offset_left = 394.0
+offset_top = 122.0
+offset_right = 894.0
+offset_bottom = 622.0
+expand_mode = 3
+stretch_mode = 5
+
+[node name="ProgressBar" type="ProgressBar" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 91.0
+offset_top = 74.0
+offset_right = 389.0
+offset_bottom = 101.0
+
+[connection signal="pressed" from="Panel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/ExtractButton" to="." method="_on_extract_button_pressed"]

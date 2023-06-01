@@ -25,6 +25,7 @@ boot_splash/show_image=false
 
 SFX="*res://addons/anthonyec.sfx/sfx.gd"
 Thumbnails="*res://globals/thumbnails/thumbnails.gd"
+FS="*res://globals/fs/fs.gd"
 
 [display]
 
