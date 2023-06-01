@@ -19,6 +19,7 @@ func set_files(new_files: Array[File]) -> void:
 	# Clear existing list.
 	for item in list.get_children():
 		list.remove_child(item)
+		item.queue_free()
 		
 	if files.is_empty():
 		var empty_state = empty_state_resource.instantiate()

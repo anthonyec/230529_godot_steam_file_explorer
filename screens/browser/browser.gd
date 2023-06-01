@@ -1,5 +1,5 @@
 class_name Browser
-extends Control
+extends Screen
 
 signal open_file(path: String)
 
@@ -147,7 +147,6 @@ func _on_files_item_selected(file: File) -> void:
 		
 	else:
 		open(get_child_path(current_path, file.file_name))
-		SFX.play_everywhere("invalid")
 
 func _on_go_up_button_pressed() -> void:
 	SFX.play_everywhere("back")

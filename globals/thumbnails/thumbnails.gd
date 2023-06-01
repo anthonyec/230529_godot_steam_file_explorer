@@ -15,6 +15,7 @@ var check_semaphore: Semaphore
 var process_semaphore: Semaphore
 
 func _ready() -> void:
+	return
 	var user_directory_access = DirAccess.open("user://")
 	
 	if not user_directory_access.dir_exists("thumbnails"):
@@ -32,6 +33,7 @@ func _ready() -> void:
 	process_thread.start(process_queue_thread)
 	
 func _exit_tree():
+	return
 	should_terminate_threads = true
 	
 	check_semaphore.post()

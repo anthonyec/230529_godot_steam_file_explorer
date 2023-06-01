@@ -24,6 +24,7 @@ func set_items(new_items: Array[File]) -> void:
 	
 	for child in list.get_children():
 		list.remove_child(child)
+		child.queue_free()
 		
 	for file in files:
 		var list_item_resource = preload("res://entities/item/item.tscn")
