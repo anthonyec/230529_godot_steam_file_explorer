@@ -71,7 +71,10 @@ func get_first_item() -> Button:
 	return list.get_child(0) as Button
 	
 func get_focused_file() -> File:
-	return files[focused_index]
+	if focused_index < files.size():
+		return files[focused_index]
+	
+	return null
 	
 func focus_first_item() -> void:
 	var first_item = get_first_item()

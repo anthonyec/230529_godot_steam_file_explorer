@@ -36,7 +36,9 @@ func _process(_delta: float) -> void:
 	
 	if Input.is_action_just_pressed("options"):
 		var focused_file = file_list.get_focused_file()
-		show_options.emit(focused_file.path)
+		
+		if focused_file:
+			show_options.emit(focused_file.path)
 
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:

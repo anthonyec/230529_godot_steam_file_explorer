@@ -39,9 +39,6 @@ func close_screen() -> void:
 	if not current_screen:
 		push_error("Current screen was not found")
 		return
-
-	# Enable browser screen processing to start keyboard events.
-	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
 	
 	# Focus the browser window.
 	browser_screen.grab_focus()
@@ -52,6 +49,10 @@ func close_screen() -> void:
 
 	# Reset the current screen.
 	current_screen = null
+	
+	# Enable browser screen processing to start keyboard events only *after*
+	# removing the other screen.
+	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
 
 func _on_screen_close() -> void:
 	close_screen()
