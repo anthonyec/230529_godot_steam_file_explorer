@@ -18,9 +18,9 @@ func open_screen(screen_name: String, path: String) -> void:
 		return
 		
 	if not screen.has_signal("close"):
-		push_error("Screen does not have close` signal: ", screen_name)
+		push_error("Screen does not have `close` signal: ", screen_name)
 		return
-
+		
 	# Disable browser screen processing to stop keyboard events.
 	browser_screen.process_mode = Node.PROCESS_MODE_DISABLED
 	
@@ -61,6 +61,9 @@ func _on_browser_open_file(path: String) -> void:
 		return
 	
 	match path.get_extension():
+		"json", "txt":
+			SFX.play_everywhere("select")
+			open_screen("text_viewer", path)
 		"png":
 			SFX.play_everywhere("select")
 			open_screen("image_viewer", path)
@@ -71,3 +74,6 @@ func _on_browser_open_file(path: String) -> void:
 		
 		_:
 			SFX.play_everywhere("invalid")
+
+func _on_browser_show_options(path) -> void:
+	open_screen("file_options_menu", path)

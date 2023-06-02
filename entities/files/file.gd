@@ -9,10 +9,11 @@ extends Button
 var folder_icon_texture: Texture2D = preload("res://entities/files/folder_icon.tres")
 var file_icon_texture: Texture2D = preload("res://entities/files/file_icon.tres")
 
-func _ready() -> void:	
-	var extension = file.file_name.get_extension()
-
-	if extension.is_empty():
+func _ready() -> void:
+	if disabled:
+		modulate = Color(1, 1, 1, 0.2)
+		
+	if file.is_directory:
 		icon_texture.texture = folder_icon_texture
 	else:
 		icon_texture.texture = file_icon_texture

@@ -2,12 +2,19 @@ class_name Browser
 extends Screen
 
 signal open_file(path: String)
+signal show_options(path: String)
 
 # TODO: Make dynamic to handle Windows?? : (
 const DELIMITER = "/"
 const ROOT_PATH = "/"
 
+enum InteractionMode {
+	BROWSE,
+	SELECT_DIRECTORY
+}
+
 @export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder" 
+@export var interaction_mode: InteractionMode = InteractionMode.BROWSE
 
 @onready var file_list: Files = %Files as Files
 @onready var go_up_button: Button = %GoUpButton as Button
@@ -18,7 +25,6 @@ const ROOT_PATH = "/"
 func _ready() -> void:
 	super()
 	goto(current_path)
-	connect("visibility_changed", _on_visiblity_changed)
 	
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("enter"):
@@ -27,23 +33,10 @@ func _process(_delta: float) -> void:
 
 	if Input.is_action_just_pressed("back"):
 		_on_go_up_button_pressed()
-		
-func _on_visiblity_changed() -> void:
-	if visible:
-		goto(current_path)
 	
-func read_zip_file(path: String) -> void:
-	var reader := ZIPReader.new()
-	var error := reader.open(path)
-	
-	if error != OK:
-		return PackedByteArray()
-	
-	var files = reader.get_files()
-	
-	print(files)
-	
-	reader.close()
+	if Input.is_action_just_pressed("options"):
+		var focused_file = file_list.get_focused_file()
+		show_options.emit(focused_file.path)
 
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:
@@ -68,6 +61,11 @@ func goto(path: String) -> void:
 	path_label.text = path
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
+	
+	# TODO: Make it so enabling the button does not need to come before `set_files`.
+	if interaction_mode == InteractionMode.SELECT_DIRECTORY:
+		file_list.enable_action_button("Select directory", func(): print("HELLO"))
+		
 	file_list.set_files(files)
 	
 func get_parent_path(path: String) -> String:

@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://is8jscftg1wt"]
+
+[ext_resource type="Script" path="res://screens/file_options_menu/file_options_menu.gd" id="1_x6g4p"]
+
+[node name="FileOptionsMenu" type="Window"]
+transparent_bg = true
+size = Vector2i(500, 400)
+borderless = true
+script = ExtResource("1_x6g4p")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionList" type="ItemList" parent="CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+item_count = 3
+item_0/text = "Open"
+item_1/text = "Copy"
+item_2/text = "Move"
+
+[connection signal="item_clicked" from="CenterContainer/OptionList" to="." method="_on_option_list_item_clicked"]
