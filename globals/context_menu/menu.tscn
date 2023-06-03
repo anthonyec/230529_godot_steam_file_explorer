@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://ma2binc7dxl7"]
+
+[ext_resource type="Script" path="res://globals/context_menu/menu.gd" id="1_8i7p2"]
+
+[node name="Menu" type="Window"]
+transparent_bg = true
+size = Vector2i(500, 400)
+borderless = true
+script = ExtResource("1_8i7p2")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionList" type="ItemList" parent="CenterContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+
+[connection signal="item_clicked" from="CenterContainer/OptionList" to="." method="_on_option_list_item_clicked"]

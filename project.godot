@@ -24,8 +24,9 @@ boot_splash/show_image=false
 [autoload]
 
 SFX="*res://addons/anthonyec.sfx/sfx.gd"
-Thumbnails="*res://globals/thumbnails/thumbnails.gd"
 FS="*res://globals/fs/fs.gd"
+Thumbnails="*res://globals/thumbnails/thumbnails.gd"
+ContextMenu="*res://globals/context_menu/context_menu.gd"
 
 [display]
 

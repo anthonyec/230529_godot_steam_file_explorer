@@ -4,6 +4,10 @@ extends Control
 
 var current_screen: Window = null
 
+func _ready() -> void:
+	ContextMenu.connect("menu_opened", _on_context_menu_opened)
+	ContextMenu.connect("menu_closed", _on_context_menu_closed)
+
 func open_screen(screen_name: String, path: String) -> void:
 	var screen_resource: Resource = load("res://screens/" + screen_name + "/" + screen_name + ".tscn")
 	
@@ -77,4 +81,22 @@ func _on_browser_open_file(path: String) -> void:
 			SFX.play_everywhere("invalid")
 
 func _on_browser_show_options(path) -> void:
-	open_screen("file_options_menu", path)
+	ContextMenu.show([
+		{ "label": "Move", "callback": func(): browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY },
+		{ "label": "Copy", "callback": func(): print("copy!") },
+		{ "label": "Info", "callback": func(): print("info!") },
+	])
+
+func _on_context_menu_opened() -> void:
+	browser_screen.process_mode = Node.PROCESS_MODE_DISABLED
+	
+	if current_screen:
+		current_screen.process_mode = Node.PROCESS_MODE_DISABLED
+	
+func _on_context_menu_closed() -> void:
+	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
+	browser_screen.grab_focus()
+	
+	if current_screen:
+		current_screen.process_mode = Node.PROCESS_MODE_INHERIT
+		current_screen.grab_focus()
