@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://caxr88sxhnqy7"]
 
 [ext_resource type="Script" path="res://screens/main/main.gd" id="1_mxl15"]
-[ext_resource type="PackedScene" uid="uid://onmjvt76lhbg" path="res://screens/browser/browser.tscn" id="1_qd2qa"]
+[ext_resource type="PackedScene" uid="uid://badj81wnpdasc" path="res://screens/browser/browser.tscn" id="1_qd2qa"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -16,4 +16,5 @@ script = ExtResource("1_mxl15")
 unique_name_in_owner = true
 
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]
+[connection signal="select_current_directory" from="Browser" to="." method="_on_browser_select_current_directory"]
 [connection signal="show_options" from="Browser" to="." method="_on_browser_show_options"]

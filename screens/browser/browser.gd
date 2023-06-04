@@ -2,7 +2,8 @@ class_name Browser
 extends Screen
 
 signal open_file(path: String)
-signal show_options(path: String)
+signal show_options(file: File)
+signal select_current_directory(path: String)
 
 # TODO: Make dynamic to handle Windows?? : (
 const DELIMITER = "/"
@@ -14,16 +15,19 @@ enum InteractionMode {
 }
 
 @export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder" 
-@export var interaction_mode: InteractionMode = InteractionMode.BROWSE
+@export var interaction_mode: InteractionMode:
+	set = set_interaction_mode
 
 @onready var file_list: Files = %Files as Files
-@onready var go_up_button: Button = %GoUpButton as Button
-@onready var title_label: Label = %Title as Label
-@onready var path_label: Label = %Path as Label
-@onready var count_label: Label = %Count as Label
+@onready var go_up_button: Button = %GoUpButton
+@onready var title_label: Label = %Title
+@onready var path_label: Label = %Path
+@onready var count_label: Label = %Count
+@onready var directory_action_button: Button = %DirectoryActionButton
 
 func _ready() -> void:
 	super()
+	directory_action_button.visible = false
 	goto(current_path)
 	
 func _process(_delta: float) -> void:
@@ -38,8 +42,21 @@ func _process(_delta: float) -> void:
 		var focused_file = file_list.get_focused_file()
 		
 		if focused_file:
-			show_options.emit(focused_file.path)
+			show_options.emit(focused_file)
 
+func set_interaction_mode(value: InteractionMode) -> void:
+	interaction_mode = value               
+	
+	if interaction_mode == InteractionMode.SELECT_DIRECTORY:
+		directory_action_button.visible = true
+		directory_action_button.text = "Move to this folder"
+		file_list.enabled_files = "directories"
+		goto(current_path)
+	else:
+		directory_action_button.visible = false
+		file_list.enabled_files = "all"
+		goto(current_path)
+	
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:
 		return true
@@ -63,11 +80,6 @@ func goto(path: String) -> void:
 	path_label.text = path
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
-	
-	# TODO: Make it so enabling the button does not need to come before `set_files`.
-	if interaction_mode == InteractionMode.SELECT_DIRECTORY:
-		file_list.enable_action_button("Select directory", func(): print("HELLO"))
-		
 	file_list.set_files(files)
 	
 func get_parent_path(path: String) -> String:
@@ -167,3 +179,6 @@ func _on_go_up_button_pressed() -> void:
 	await into_animation(true)
 	goto(new_path)
 	await outo_animation(true)
+
+func _on_directory_action_button_pressed() -> void:
+	select_current_directory.emit(current_path)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://entities/item/item.gd" id="1_ihuac"]
+[ext_resource type="Script" path="res://components/item/item.gd" id="1_ihuac"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_0pccp"]
 

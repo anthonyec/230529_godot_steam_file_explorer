@@ -5,6 +5,8 @@ extends Control
 var current_screen: Window = null
 
 func _ready() -> void:
+	AppState.connect("moving_file_updated", _on_app_state_moving_file_updated)
+	
 	ContextMenu.connect("menu_opened", _on_context_menu_opened)
 	ContextMenu.connect("menu_closed", _on_context_menu_closed)
 
@@ -80,9 +82,18 @@ func _on_browser_open_file(path: String) -> void:
 		_:
 			SFX.play_everywhere("invalid")
 
-func _on_browser_show_options(path) -> void:
+func _on_context_menu_move(file: File) -> void:
+	AppState.moving_file = file
+	browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
+	
+	print("Start moving file: ", file)
+	
+func _on_browser_show_options(file: File) -> void:
+	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
+		return
+
 	ContextMenu.show([
-		{ "label": "Move", "callback": func(): browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY },
+		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
 		{ "label": "Copy", "callback": func(): print("copy!") },
 		{ "label": "Info", "callback": func(): print("info!") },
 	])
@@ -100,3 +111,22 @@ func _on_context_menu_closed() -> void:
 	if current_screen:
 		current_screen.process_mode = Node.PROCESS_MODE_INHERIT
 		current_screen.grab_focus()
+
+
+func _on_browser_select_current_directory(path: String) -> void:
+	if AppState.moving_file == null:
+		return
+		
+	if AppState.moving_file.path.get_base_dir() == path:
+		print("Already exists in this folder, cancelling move")
+		AppState.moving_file = null
+		return
+	
+	FS.move(AppState.moving_file.path, path)
+	AppState.moving_file = null
+
+func _on_app_state_moving_file_updated() -> void:	
+	if AppState.moving_file != null:
+		browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
+	else:
+		browser_screen.interaction_mode = browser_screen.InteractionMode.BROWSE

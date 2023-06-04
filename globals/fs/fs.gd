@@ -36,3 +36,22 @@ func move(from: String, to: String) -> void:
 	
 	if exit_code != 0:
 		push_error("Failed to move: ", output)
+		
+func get_file_names_in_directory(path: String) -> Array[String]:
+	var dir_access = DirAccess.open(path)
+	
+	dir_access.list_dir_begin()
+	
+	var file_names: Array[String] = []
+	var file_name = dir_access.get_next()
+		
+	while file_name != "":
+		file_names.append(file_name)
+		file_name = dir_access.get_next()
+		
+	return file_names
+
+func create_shallow_directory_watcher(path: String) -> void:
+	var file_names = get_file_names_in_directory(path)
+	
+#	var timer = get_tree().create_timer(1)

@@ -7,13 +7,26 @@ signal item_selected(file: File)
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var list: VBoxContainer = %List
 
-var item_resource: Resource = preload("res://entities/files/file.tscn")
-var empty_state_resource: Resource = preload("res://entities/files/empty_state.tscn")
+@export var enabled_files: String:
+	set = set_enabled_files
+
+var item_resource: Resource = preload("res://components/files/file.tscn")
+var empty_state_resource: Resource = preload("res://components/files/empty_state.tscn")
 
 var focused_index: int
 var focused_file: File
 var files: Array[File] = []
-var action_button: Dictionary = {}
+
+func set_enabled_files(value: String) -> void:
+	enabled_files = value
+	
+	if value == "all":
+		for file in files:
+			file.is_disabled = false
+		
+	if value == "directories":
+		for file in files:
+			file.is_disabled = not file.is_directory
 
 func set_files(new_files: Array[File]) -> void:
 	files = new_files
@@ -22,13 +35,6 @@ func set_files(new_files: Array[File]) -> void:
 	for item in list.get_children():
 		list.remove_child(item)
 		item.queue_free()
-		
-	if not action_button.is_empty():
-		var button = Button.new()
-		
-		button.text = action_button.label
-		button.connect("pressed", action_button.callback)
-		list.add_child(button)
 		
 	if files.is_empty():
 		var empty_state = empty_state_resource.instantiate()
@@ -47,11 +53,11 @@ func set_files(new_files: Array[File]) -> void:
 		item.file = file
 		item.file.index = index
 		
+		if enabled_files == "directories" and not item.file.is_directory:
+			item.file.is_disabled = true
+		
 		item.connect("focus_entered", _on_item_focused.bind(index, file, item))
 		item.connect("pressed", _on_item_pressed.bind(file))
-		
-		if not action_button.is_empty() and not file.is_directory:
-			item.disabled = true
 			
 		list.add_child(item)
 		
@@ -100,15 +106,6 @@ func scroll_into_view(item: Button) -> void:
 		scroll_tween.tween_property(scroll_container, "scroll_vertical", new_scroll_position, 0.2) \
 			.set_ease(Tween.EASE_OUT) \
 			.set_trans(Tween.TRANS_CIRC)
-			
-func enable_action_button(label: String, callback: Callable) -> void:
-	action_button = {
-		"label": label,
-		"callback": callback
-	}
-	
-func disable_action_button() -> void:
-	action_button = {}
 
 func _on_item_focused(index: int, file: File, item: Button) -> void:
 	focused_index = index

@@ -6,13 +6,14 @@ extends Button
 @onready var icon_texture: TextureRect = %Icon as TextureRect
 @onready var label: Label = %Label as Label
 
-var folder_icon_texture: Texture2D = preload("res://entities/files/folder_icon.tres")
-var file_icon_texture: Texture2D = preload("res://entities/files/file_icon.tres")
+var folder_icon_texture: Texture2D = preload("res://components/files/folder_icon.tres")
+var file_icon_texture: Texture2D = preload("res://components/files/file_icon.tres")
 
 func _ready() -> void:
-	if disabled:
-		modulate = Color(1, 1, 1, 0.2)
-		
+	file.connect("updated", _on_file_updated)
+	
+	_on_file_updated()
+	
 	if file.is_directory:
 		icon_texture.texture = folder_icon_texture
 	else:
@@ -25,4 +26,14 @@ func _ready() -> void:
 			var thumbnail_texture = ImageTexture.create_from_image(image)
 			icon_texture.texture = thumbnail_texture
 		)
+	
+func _on_file_updated() -> void:
+	var opacity = 0.2 if file.is_disabled else 1
+	var color_tween = get_tree().create_tween()
+	
+	color_tween.set_ease(Tween.EASE_IN_OUT)
+	color_tween.set_trans(Tween.TRANS_SINE)
+	color_tween.tween_property(self, "modulate", Color(1, 1, 1, opacity), 0.3)
+	
+	disabled = file.is_disabled
 	

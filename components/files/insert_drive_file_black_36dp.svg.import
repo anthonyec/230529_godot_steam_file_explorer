@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1s8p5rj60evi"
-path="res://.godot/imported/insert_drive_file_black_36dp.svg-1ec0f3fe85983076c18b4c491a887bef.ctex"
+path="res://.godot/imported/insert_drive_file_black_36dp.svg-810629afc29c77c163af3015db969371.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/files/insert_drive_file_black_36dp.svg"
-dest_files=["res://.godot/imported/insert_drive_file_black_36dp.svg-1ec0f3fe85983076c18b4c491a887bef.ctex"]
+source_file="res://components/files/insert_drive_file_black_36dp.svg"
+dest_files=["res://.godot/imported/insert_drive_file_black_36dp.svg-810629afc29c77c163af3015db969371.ctex"]
 
 [params]
 

@@ -27,6 +27,7 @@ SFX="*res://addons/anthonyec.sfx/sfx.gd"
 FS="*res://globals/fs/fs.gd"
 Thumbnails="*res://globals/thumbnails/thumbnails.gd"
 ContextMenu="*res://globals/context_menu/context_menu.gd"
+AppState="*res://globals/app_state/app_state.gd"
 
 [display]
 

@@ -1,10 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://onmjvt76lhbg"]
+[gd_scene load_steps=5 format=3 uid="uid://badj81wnpdasc"]
 
 [ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
-[ext_resource type="PackedScene" uid="uid://c8pnmrwaxq4lq" path="res://entities/files/files.tscn" id="2_wu4yh"]
+[ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="2_7khgx"]
+[ext_resource type="PackedScene" uid="uid://dbbd43p8lm1e8" path="res://components/files/files.tscn" id="2_wu4yh"]
+[ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://components/files/button_style_focus.tres" id="3_2pk85"]
 
 [node name="Browser" type="Window"]
-size = Vector2i(500, 500)
+size = Vector2i(800, 600)
 script = ExtResource("1_pf074")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -14,28 +16,28 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="TitleBar" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 60)
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_right = 25
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar"]
 layout_mode = 2
 theme_override_constants/separation = 15
 
-[node name="GoUpButton" type="Button" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="GoUpButton" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 2.08165e-12)
 layout_mode = 2
 text = "<"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/TitleBar/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Title" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="VBoxContainer/TitleBar/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 1
@@ -44,7 +46,7 @@ text = "Title
 "
 text_overrun_behavior = 3
 
-[node name="Path" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="Path" type="Label" parent="VBoxContainer/TitleBar/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -53,7 +55,7 @@ theme_override_font_sizes/font_size = 20
 text = "/path/to/file"
 text_overrun_behavior = 3
 
-[node name="Count" type="Label" parent="VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="Count" type="Label" parent="VBoxContainer/TitleBar/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -62,11 +64,20 @@ theme_override_font_sizes/font_size = 20
 text = "123 files"
 vertical_alignment = 1
 
+[node name="DirectoryActionButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 50)
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_7khgx")
+theme_override_styles/focus = ExtResource("3_2pk85")
+text = "Directory action label"
+
 [node name="Files" parent="VBoxContainer" instance=ExtResource("2_wu4yh")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[connection signal="pressed" from="VBoxContainer/MarginContainer/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/DirectoryActionButton" to="." method="_on_directory_action_button_pressed"]
 [connection signal="item_focused" from="VBoxContainer/Files" to="." method="_on_files_item_focused"]
 [connection signal="item_selected" from="VBoxContainer/Files" to="." method="_on_files_item_selected"]
