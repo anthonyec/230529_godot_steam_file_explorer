@@ -29,6 +29,7 @@ func open_screen(screen_name: String, path: String) -> void:
 		
 	# Disable browser screen processing to stop keyboard events.
 	browser_screen.process_mode = Node.PROCESS_MODE_DISABLED
+#	browser_screen.gui_disable_input = true
 	
 	# Show the new screen.
 	current_screen = screen
@@ -59,6 +60,7 @@ func close_screen() -> void:
 	# Enable browser screen processing to start keyboard events only *after*
 	# removing the other screen.
 	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
+#	browser_screen.gui_disable_input = false
 
 func _on_screen_close() -> void:
 	close_screen()
@@ -86,7 +88,12 @@ func _on_context_menu_move(file: File) -> void:
 	AppState.moving_file = file
 	browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
 	
-	print("Start moving file: ", file)
+func _on_context_menu_duplicate(file: File) -> void:
+	var new_file_name = FS.get_next_file_name(file.path)
+	var base_directory = file.path.get_base_dir()
+	
+	FS.copy(file.path, base_directory + "/" + new_file_name)
+	browser_screen.reload()
 	
 func _on_browser_show_options(file: File) -> void:
 	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
@@ -94,8 +101,9 @@ func _on_browser_show_options(file: File) -> void:
 
 	ContextMenu.show([
 		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
-		{ "label": "Copy", "callback": func(): print("copy!") },
+		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
 		{ "label": "Info", "callback": func(): print("info!") },
+		{ "label": "Trash", "callback": func(): print("trash!") },
 	])
 
 func _on_context_menu_opened() -> void:
@@ -125,7 +133,7 @@ func _on_browser_select_current_directory(path: String) -> void:
 	FS.move(AppState.moving_file.path, path)
 	AppState.moving_file = null
 
-func _on_app_state_moving_file_updated() -> void:	
+func _on_app_state_moving_file_updated() -> void:
 	if AppState.moving_file != null:
 		browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
 	else:

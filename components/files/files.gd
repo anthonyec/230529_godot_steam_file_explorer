@@ -27,6 +27,17 @@ func set_enabled_files(value: String) -> void:
 	if value == "directories":
 		for file in files:
 			file.is_disabled = not file.is_directory
+			
+func create_item(file: File, index: int) -> FileItem:
+	var item = item_resource.instantiate() as FileItem
+	
+	item.file = file
+	item.file.index = index # TODO: Why is this needed?
+	
+	item.connect("focus_entered", _on_item_focused.bind(index, file, item))
+	item.connect("pressed", _on_item_pressed.bind(file))
+	
+	return item
 
 func set_files(new_files: Array[File]) -> void:
 	files = new_files
@@ -48,17 +59,11 @@ func set_files(new_files: Array[File]) -> void:
 	# Create a new list.
 	for index in files.size():
 		var file = files[index]
-		var item = item_resource.instantiate() as FileItem
-		
-		item.file = file
-		item.file.index = index
+		var item = create_item(file, index)
 		
 		if enabled_files == "directories" and not item.file.is_directory:
 			item.file.is_disabled = true
 		
-		item.connect("focus_entered", _on_item_focused.bind(index, file, item))
-		item.connect("pressed", _on_item_pressed.bind(file))
-			
 		list.add_child(item)
 		
 		if focused_file and file.id == focused_file.id:
@@ -87,6 +92,12 @@ func focus_first_item() -> void:
 	
 	if first_item:
 		first_item.grab_focus()
+		
+func focus_item(index: int) -> void:
+	var item = list.get_child(0) as Button
+	
+	if item:
+		item.grab_focus()
 	
 func scroll_into_view(item: Button) -> void:
 	var item_rect = item.get_rect()
@@ -106,6 +117,17 @@ func scroll_into_view(item: Button) -> void:
 		scroll_tween.tween_property(scroll_container, "scroll_vertical", new_scroll_position, 0.2) \
 			.set_ease(Tween.EASE_OUT) \
 			.set_trans(Tween.TRANS_CIRC)
+			
+func add_item(file: File, index: int) -> void:
+	var item = create_item(file, index);
+	
+	list.add_child(item)
+	list.move_child(item, index)
+	
+func remove_item(index: int) -> void:
+	var item = list.get_child(index)
+	
+	list.remove_child(item)
 
 func _on_item_focused(index: int, file: File, item: Button) -> void:
 	focused_index = index

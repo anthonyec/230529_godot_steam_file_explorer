@@ -82,6 +82,9 @@ func goto(path: String) -> void:
 	files.sort_custom(sort_files_by_alphabetical)
 	file_list.set_files(files)
 	
+func reload() -> void:
+	goto(current_path)
+	
 func get_parent_path(path: String) -> String:
 	var split = path.split("/")
 	
