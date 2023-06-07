@@ -28,8 +28,7 @@ func open_screen(screen_name: String, path: String) -> void:
 		return
 		
 	# Disable browser screen processing to stop keyboard events.
-	browser_screen.process_mode = Node.PROCESS_MODE_DISABLED
-#	browser_screen.gui_disable_input = true
+	browser_screen.set_process_input(false)
 	
 	# Show the new screen.
 	current_screen = screen
@@ -59,8 +58,7 @@ func close_screen() -> void:
 	
 	# Enable browser screen processing to start keyboard events only *after*
 	# removing the other screen.
-	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
-#	browser_screen.gui_disable_input = false
+	browser_screen.set_process_input(true)
 
 func _on_screen_close() -> void:
 	close_screen()
@@ -99,7 +97,7 @@ func _on_browser_show_options(file: File) -> void:
 	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
 		return
 
-	ContextMenu.show([
+	ContextMenu.show("Options for " + file.file_name, [
 		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
 		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
 		{ "label": "Info", "callback": func(): print("info!") },
@@ -107,17 +105,17 @@ func _on_browser_show_options(file: File) -> void:
 	])
 
 func _on_context_menu_opened() -> void:
-	browser_screen.process_mode = Node.PROCESS_MODE_DISABLED
+	browser_screen.set_process_input(false)
 	
 	if current_screen:
-		current_screen.process_mode = Node.PROCESS_MODE_DISABLED
+		current_screen.set_process_input(false)
 	
 func _on_context_menu_closed() -> void:
-	browser_screen.process_mode = Node.PROCESS_MODE_INHERIT
+	browser_screen.set_process_input(true)
 	browser_screen.grab_focus()
 	
 	if current_screen:
-		current_screen.process_mode = Node.PROCESS_MODE_INHERIT
+		current_screen.set_process_input(true)
 		current_screen.grab_focus()
 
 

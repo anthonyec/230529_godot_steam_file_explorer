@@ -30,15 +30,15 @@ func _ready() -> void:
 	directory_action_button.visible = false
 	goto(current_path)
 	
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("enter"):
+func _input(event: InputEvent) -> void:
+	if event.is_action_released("enter", true):
 		var focused_file = file_list.get_focused_file()
 		_on_files_item_selected(focused_file)
 
-	if Input.is_action_just_pressed("back"):
+	if event.is_action_released("back"):
 		_on_go_up_button_pressed()
 	
-	if Input.is_action_just_pressed("options"):
+	if event.is_action_released("options", true):
 		var focused_file = file_list.get_focused_file()
 		
 		if focused_file:

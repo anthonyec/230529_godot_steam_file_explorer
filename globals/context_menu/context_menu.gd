@@ -3,16 +3,17 @@ extends Node
 signal menu_opened
 signal menu_closed
 
-var menu_resource: PackedScene = preload("res://globals/context_menu/menu.tscn")
+var menu_scene: PackedScene = preload("res://globals/context_menu/menu.tscn")
 
 var current_menu: Window = null
 
-func show(options: Array[Dictionary]) -> void:
+func show(title: String, options: Array[Dictionary]) -> void:
 	menu_opened.emit()
 	
-	var menu = menu_resource.instantiate()
+	var menu = menu_scene.instantiate()
 	
 	menu.connect("close", _on_menu_close)
+	menu.title = title
 	menu.options = options
 	
 	add_child(menu)

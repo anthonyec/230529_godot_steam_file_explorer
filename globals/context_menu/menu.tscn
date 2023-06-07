@@ -15,10 +15,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="OptionList" type="ItemList" parent="CenterContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Menu title"
+
+[node name="OptionList" type="ItemList" parent="CenterContainer/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 
-[connection signal="item_clicked" from="CenterContainer/OptionList" to="." method="_on_option_list_item_clicked"]
+[connection signal="item_clicked" from="CenterContainer/VBoxContainer/OptionList" to="." method="_on_option_list_item_clicked"]
