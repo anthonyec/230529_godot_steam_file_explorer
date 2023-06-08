@@ -31,11 +31,7 @@ func _ready() -> void:
 	goto(current_path)
 	
 func _input(event: InputEvent) -> void:
-	if event.is_action_released("enter", true):
-		var focused_file = file_list.get_focused_file()
-		_on_files_item_selected(focused_file)
-
-	if event.is_action_released("back"):
+	if event.is_action_released("ui_cancel", true):
 		_on_go_up_button_pressed()
 	
 	if event.is_action_released("options", true):

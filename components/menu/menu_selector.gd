@@ -76,5 +76,5 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("ui_down"):
 		move(1)
 		
-	if Input.is_action_just_pressed("enter"):
-		enter(highlighted)
+#	if Input.is_action_just_pressed("enter"):
+#		enter(highlighted)

@@ -31,11 +31,11 @@ func _process(_delta: float) -> void:
 		return
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_released("enter", true) or event.is_action_released("ui_accept", true):
+	if event.is_action_released("ui_accept", true):
 		var selected = option_list.get_selected_items()
 		invoke_action(selected[0])
 		
-	if Input.is_action_just_released("back", true) or Input.is_action_just_pressed("options", true):
+	if Input.is_action_just_released("ui_cancel", true) or Input.is_action_just_pressed("options", true):
 		is_closing = true
 		await animate_out()
 		close.emit()

@@ -10,7 +10,7 @@ func open(path: String) -> void:
 	option_list.select(0)
 	
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("back"):
+	if Input.is_action_just_pressed("ui_cancel"):
 		close.emit()
 
 func _on_option_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
