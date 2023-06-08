@@ -24,10 +24,10 @@ boot_splash/show_image=false
 [autoload]
 
 SFX="*res://addons/anthonyec.sfx/sfx.gd"
-FS="*res://globals/fs/fs.gd"
-Thumbnails="*res://globals/thumbnails/thumbnails.gd"
-ContextMenu="*res://globals/context_menu/context_menu.gd"
-AppState="*res://globals/app_state/app_state.gd"
+FS="*res://autoload/fs/fs.gd"
+Thumbnails="*res://autoload/thumbnails/thumbnails.gd"
+ContextMenu="*res://autoload/context_menu/context_menu.gd"
+AppState="*res://autoload/app_state/app_state.gd"
 
 [display]
 

@@ -1,12 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://ma2binc7dxl7"]
+[gd_scene load_steps=2 format=3 uid="uid://d2jw3h53mvpub"]
 
-[ext_resource type="Script" path="res://globals/context_menu/menu.gd" id="1_8i7p2"]
+[ext_resource type="Script" path="res://autoload/context_menu/menu.gd" id="1_x0msa"]
 
 [node name="Menu" type="Window"]
 transparent_bg = true
 size = Vector2i(500, 400)
 borderless = true
-script = ExtResource("1_8i7p2")
+script = ExtResource("1_x0msa")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]
 anchors_preset = 15

@@ -9,6 +9,10 @@ func _ready() -> void:
 	
 	ContextMenu.connect("menu_opened", _on_context_menu_opened)
 	ContextMenu.connect("menu_closed", _on_context_menu_closed)
+	
+	
+#	var result = VDF.parse_from_file("res://example.vdf")
+#	print(result)
 
 func open_screen(screen_name: String, path: String) -> void:
 	var screen_resource: Resource = load("res://screens/" + screen_name + "/" + screen_name + ".tscn")
@@ -92,6 +96,24 @@ func _on_context_menu_duplicate(file: File) -> void:
 	
 	FS.copy(file.path, base_directory + "/" + new_file_name)
 	browser_screen.reload()
+
+func _on_context_menu_write_vdf_file() -> void:
+	var source_file = FileAccess.open("res://example.vdf", FileAccess.READ)
+	var destination_file = FileAccess.open("/home/deck/.local/share/Steam/userdata/39956378/config/shortcuts.vdf", FileAccess.WRITE)
+	
+	await get_tree().create_timer(0.5).timeout
+	
+	if not source_file:
+		ContextMenu.show("NO SOURCE FILE", [])
+		return
+		
+	if not destination_file:
+		ContextMenu.show("NO DEST FILE", [])
+		return
+		
+	destination_file.store_buffer(source_file.get_buffer(source_file.get_length()))
+	
+	ContextMenu.show("Done", [])
 	
 func _on_browser_show_options(file: File) -> void:
 	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
@@ -102,6 +124,7 @@ func _on_browser_show_options(file: File) -> void:
 		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
 		{ "label": "Info", "callback": func(): print("info!") },
 		{ "label": "Trash", "callback": func(): print("trash!") },
+		{ "label": "Test - write VDF file", "callback": _on_context_menu_write_vdf_file },
 	])
 
 func _on_context_menu_opened() -> void:

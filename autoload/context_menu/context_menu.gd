@@ -3,7 +3,7 @@ extends Node
 signal menu_opened
 signal menu_closed
 
-var menu_scene: PackedScene = preload("res://globals/context_menu/menu.tscn")
+var menu_scene: PackedScene = preload("res://autoload/context_menu/menu.tscn")
 
 var current_menu: Window = null
 
