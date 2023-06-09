@@ -15,7 +15,6 @@ func _ready() -> void:
 func maximize_screen(screen: Screen) -> void:
 	var viewport_size = get_parent().get_viewport().size
 	
-	print(viewport_size)
 	screen.size = Vector2i(viewport_size.x, viewport_size.y)
 	screen.position = Vector2i(0, 0)
 	
