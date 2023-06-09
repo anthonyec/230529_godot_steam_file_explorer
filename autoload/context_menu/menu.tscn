@@ -6,6 +6,8 @@
 transparent_bg = true
 size = Vector2i(500, 400)
 borderless = true
+always_on_top = true
+transparent = true
 script = ExtResource("1_x0msa")
 
 [node name="CenterContainer" type="CenterContainer" parent="."]

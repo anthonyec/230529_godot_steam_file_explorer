@@ -6,8 +6,6 @@ var current_screen: Window = null
 
 func _ready() -> void:
 	AppState.connect("moving_file_updated", _on_app_state_moving_file_updated)
-	
-	ContextMenu.connect("menu_opened", _on_context_menu_opened)
 	ContextMenu.connect("menu_closed", _on_context_menu_closed)
 
 func open_screen(screen_name: String, path: String) -> void:
@@ -26,10 +24,7 @@ func open_screen(screen_name: String, path: String) -> void:
 	if not screen.has_signal("close"):
 		push_error("Screen does not have `close` signal: ", screen_name)
 		return
-		
-	# Disable browser screen processing to stop keyboard events.
-	browser_screen.set_process_input(false)
-	
+
 	# Show the new screen.
 	current_screen = screen
 	add_child(current_screen)
@@ -55,10 +50,6 @@ func close_screen() -> void:
 
 	# Reset the current screen.
 	current_screen = null
-	
-	# Enable browser screen processing to start keyboard events only *after*
-	# removing the other screen.
-	browser_screen.set_process_input(true)
 
 func _on_screen_close() -> void:
 	close_screen()
@@ -108,18 +99,10 @@ func _on_browser_show_options(file: File) -> void:
 		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) }
 	])
 
-func _on_context_menu_opened() -> void:
-	browser_screen.set_process_input(false)
-	
-	if current_screen:
-		current_screen.set_process_input(false)
-	
 func _on_context_menu_closed() -> void:
-	browser_screen.set_process_input(true)
 	browser_screen.grab_focus()
-	
+
 	if current_screen:
-		current_screen.set_process_input(true)
 		current_screen.grab_focus()
 
 func _on_browser_select_current_directory(path: String) -> void:

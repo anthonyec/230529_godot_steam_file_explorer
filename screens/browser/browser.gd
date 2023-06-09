@@ -167,11 +167,11 @@ func _on_files_item_selected(file: File) -> void:
 		SFX.play_everywhere("enter")
 		
 		await into_animation()
-		goto(get_child_path(current_path, file.file_name))
+		goto(file.path)
 		await outo_animation()
 		
 	else:
-		open(get_child_path(current_path, file.file_name))
+		open(file.path)
 
 func _on_go_up_button_pressed() -> void:
 	SFX.play_everywhere("back")

@@ -10,8 +10,11 @@ signal close
 
 var target_path: String
 var is_closing: bool = false
+var previously_focused_control: Control
 
 func _ready() -> void:
+	connect("focus_exited", _on_focus_exited)
+	
 	title_label.text = title
 	
 	for option in options:
@@ -21,16 +24,15 @@ func _ready() -> void:
 	option_list.select(0)
 	
 	# TODO: Add resize listener.
-	maximize_screen(self)
+#	maximize_screen(self)
 	always_on_top = true
 	
 	animate_in()
 	
-func _process(_delta: float) -> void:
+func _input(event: InputEvent) -> void:
 	if is_closing:
 		return
 
-func _input(event: InputEvent) -> void:
 	if event.is_action_released("ui_accept", true):
 		var selected = option_list.get_selected_items()
 		invoke_action(selected[0])
@@ -39,6 +41,11 @@ func _input(event: InputEvent) -> void:
 		is_closing = true
 		await animate_out()
 		close.emit()
+		
+func _on_focus_exited() -> void:
+	is_closing = true
+	await animate_out()
+	close.emit()
 
 func _on_option_list_item_clicked(index: int, _at_position: Vector2, _mouse_button_index: int) -> void:
 	invoke_action(index)
