@@ -39,6 +39,12 @@ func _input(event: InputEvent) -> void:
 		
 		if focused_file:
 			show_options.emit(focused_file)
+			
+	if event.is_action_released("mark", true):
+		var focused_file = file_list.get_focused_file()
+		focused_file.is_selected = !focused_file.is_selected
+		
+		SFX.play_everywhere("select")
 
 func set_interaction_mode(value: InteractionMode) -> void:
 	interaction_mode = value               

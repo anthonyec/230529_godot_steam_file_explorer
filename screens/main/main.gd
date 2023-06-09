@@ -93,6 +93,10 @@ func _on_context_menu_duplicate(file: File) -> void:
 	FS.copy(file.path, base_directory + "/" + new_file_name)
 	browser_screen.reload()
 	
+func _on_context_menu_trash(file: File) -> void:
+	print("_on_context_menu_trash")
+	FS.trash(file.path)
+	
 func _on_browser_show_options(file: File) -> void:
 	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
 		return
@@ -101,7 +105,7 @@ func _on_browser_show_options(file: File) -> void:
 		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
 		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
 		{ "label": "Info", "callback": func(): print("info!") },
-		{ "label": "Trash", "callback": func(): print("trash!") }
+		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) }
 	])
 
 func _on_context_menu_opened() -> void:
@@ -117,7 +121,6 @@ func _on_context_menu_closed() -> void:
 	if current_screen:
 		current_screen.set_process_input(true)
 		current_screen.grab_focus()
-
 
 func _on_browser_select_current_directory(path: String) -> void:
 	if AppState.moving_file == null:

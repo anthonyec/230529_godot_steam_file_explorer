@@ -29,6 +29,24 @@ func create_temporary_directory() -> DirAccess:
 	dir_access.change_dir(temp_path)
 	
 	return dir_access
+	
+func trash(path: String) -> void:
+	if OS.get_name() == "Linux":
+		var output: Array = []
+		var exit_code = OS.execute("gio", ["trash", path], output, true)
+	
+		if exit_code != 0:
+			push_error("Failed to trash: ", output)
+			
+	if OS.get_name() == "macOS":
+		var output: Array = []
+		var arguments = ["-e", "\"tell application \"Finder\" to delete POSIX file \"" + path + "\"\""]
+		var exit_code = OS.execute("osascript", arguments, output, true)
+		
+		print(arguments[1])
+	
+		if exit_code != 0:
+			push_error("Failed to trash: ", output)
 
 # Move a direcotry or file.
 # TODO: Return an erro result.
