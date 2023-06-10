@@ -13,9 +13,23 @@ signal item_selected(file: File)
 var item_resource: Resource = preload("res://components/files/file.tscn")
 var empty_state_resource: Resource = preload("res://components/files/empty_state.tscn")
 
-var focused_index: int
 var focused_file: File
 var files: Array[File] = []
+
+var list_id: String = ""
+var id_to_item_map: Dictionary = {}
+
+func _ready() -> void:
+	get_viewport().connect("gui_focus_changed", _on_gui_focus_changed)
+	
+func _on_gui_focus_changed(control: Control) -> void:
+	if control.get_parent() == list:
+		control = control as FileItem
+		focused_file = control.file
+		item_focused.emit(control.file)
+		scroll_into_view(control)
+	else: 
+		focused_file = null
 
 func set_enabled_files(value: String) -> void:
 	enabled_files = value
@@ -28,52 +42,88 @@ func set_enabled_files(value: String) -> void:
 		for file in files:
 			file.is_disabled = not file.is_directory
 			
-func create_item(file: File, index: int) -> FileItem:
+func create_item(file: File) -> FileItem:
 	var item = item_resource.instantiate() as FileItem
 	
 	item.file = file
-	item.file.index = index # TODO: Why is this needed?
 	
-	item.connect("focus_entered", _on_item_focused.bind(index, file, item))
 	item.connect("pressed", _on_item_pressed.bind(file))
 	
 	return item
-
-func set_files(new_files: Array[File]) -> void:
-	files = new_files
 	
-	# Clear existing list.
-	for item in list.get_children():
-		list.remove_child(item)
-		item.queue_free()
-		
-	if files.is_empty():
-		var empty_state = empty_state_resource.instantiate()
+func add_item(item: FileItem, index: int = -1) -> void:
+	list.add_child(item)
+	id_to_item_map[item.file.id] = item
+	
+	if index != -1:
+		list.move_child(item, index)
+	
+func remove_item(item: FileItem) -> void:
+	list.remove_child(item)
+	id_to_item_map.erase(item.file.id)
+	
+func has_item_by_id(id: String) -> bool:
+	return id_to_item_map.has(id)
 
-		list.add_child(empty_state)
-		focus_first_item()
+func set_files(id: String, new_files: Array[File]) -> void:
+	# Blast away the whole list and start again if the ID has changed. This is
+	# so it does not animate between directory changes, where every file would 
+	# be new.
+	if list_id != id:
+		list_id = id
+		
+		for child in list.get_children():
+			remove_item(child)
+			
+		for file in new_files:
+			var item = create_item(file)
+			add_item(item)
+		
 		return
 	
-	var found_focused_item: FileItem = null
+	var file_ids: Dictionary = {}
 	
-	# Create a new list.
-	for index in files.size():
-		var file = files[index]
-		var item = create_item(file, index)
+	for index in new_files.size():
+		var new_file = new_files[index]
+		var item_exists = has_item_by_id(new_file.id)
 		
-		if enabled_files == "directories" and not item.file.is_directory:
-			item.file.is_disabled = true
+		if not item_exists:
+			var item = create_item(new_file)
+			add_item(item, index)
+			
+			var target_size = item.custom_minimum_size
+			var tween = get_tree().create_tween()
+			
+			tween.set_ease(Tween.EASE_IN_OUT)
+			tween.set_trans(Tween.TRANS_EXPO)
+			tween.set_parallel(true)
+			tween.tween_property(item, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
+			tween.tween_property(item, "custom_minimum_size:y", target_size.y, 0.3).from(0)
+			
+		file_ids[new_file.id] = true
+	
+	var children_to_remove: Array[FileItem] = []
+	
+	for index in list.get_child_count():
+		var item = list.get_child(index) as FileItem
 		
-		list.add_child(item)
-		
-		if focused_file and file.id == focused_file.id:
-			found_focused_item = item
+		if not item:
+			continue
 
-	if found_focused_item:
-		found_focused_item.grab_focus()
-		return
+		if not file_ids.has(item.file.id):
+			children_to_remove.append(item)
+
+	## TODO: Can avoid additional loop I think by making the above loop reversed.
+	for child in children_to_remove:
+		var tween = get_tree().create_tween()
 		
-	focus_first_item()
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.set_trans(Tween.TRANS_EXPO)
+		tween.tween_property(child, "modulate", Color(1, 1, 1, 0), 0.3)
+		tween.tween_property(child, "custom_minimum_size:y", 0, 0.3)
+		tween.tween_callback(func():
+			remove_item(child)
+		)
 
 func get_files() -> Array[File]:
 	return files
@@ -82,10 +132,7 @@ func get_first_item() -> Button:
 	return list.get_child(0) as Button
 	
 func get_focused_file() -> File:
-	if focused_index < files.size():
-		return files[focused_index]
-	
-	return null
+	return focused_file
 	
 func focus_first_item() -> void:
 	var first_item = get_first_item()
@@ -117,23 +164,6 @@ func scroll_into_view(item: Button) -> void:
 		scroll_tween.tween_property(scroll_container, "scroll_vertical", new_scroll_position, 0.2) \
 			.set_ease(Tween.EASE_OUT) \
 			.set_trans(Tween.TRANS_CIRC)
-			
-func add_item(file: File, index: int) -> void:
-	var item = create_item(file, index);
-	
-	list.add_child(item)
-	list.move_child(item, index)
-	
-func remove_item(index: int) -> void:
-	var item = list.get_child(index)
-	
-	list.remove_child(item)
-
-func _on_item_focused(index: int, file: File, item: Button) -> void:
-	focused_index = index
-	focused_file = file
-	item_focused.emit(file)
-	scroll_into_view(item)
 	
 func _on_item_pressed(file: File) -> void:
 	item_selected.emit(file)

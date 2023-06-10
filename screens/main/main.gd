@@ -93,10 +93,11 @@ func _on_browser_show_options(file: File) -> void:
 		return
 
 	ContextMenu.show("Options for " + file.file_name, [
+		{ "label": "Reload", "callback": func(): browser_screen.reload() },
 		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
 		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
 		{ "label": "Info", "callback": func(): print("info!") },
-		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) }
+		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) },
 	])
 
 func _on_context_menu_closed() -> void:
@@ -115,6 +116,7 @@ func _on_browser_select_current_directory(path: String) -> void:
 		return
 	
 	FS.move(AppState.moving_file.path, path)
+	browser_screen.reload()
 	AppState.moving_file = null
 
 func _on_app_state_moving_file_updated() -> void:

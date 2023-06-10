@@ -53,11 +53,9 @@ func set_interaction_mode(value: InteractionMode) -> void:
 		directory_action_button.visible = true
 		directory_action_button.text = "Move to this folder"
 		file_list.enabled_files = "directories"
-		goto(current_path)
 	else:
 		directory_action_button.visible = false
 		file_list.enabled_files = "all"
-		goto(current_path)
 	
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:
@@ -82,7 +80,7 @@ func goto(path: String) -> void:
 	path_label.text = path
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
-	file_list.set_files(files)
+	file_list.set_files(path, files)
 	
 func reload() -> void:
 	goto(current_path)
