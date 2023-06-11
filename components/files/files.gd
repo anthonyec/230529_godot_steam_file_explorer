@@ -132,6 +132,9 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		)
 	
 func get_first_item() -> FileItem:
+	if list.get_child_count() == 0:
+		return null
+		
 	return list.get_child(0) as FileItem
 	
 func focus_first_item() -> void:
