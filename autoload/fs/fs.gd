@@ -40,10 +40,8 @@ func trash(path: String) -> void:
 			
 	if OS.get_name() == "macOS":
 		var output: Array = []
-		var arguments = ["-e", "\"tell application \"Finder\" to delete POSIX file \"" + path + "\"\""]
+		var arguments = [ProjectSettings.globalize_path("res://autoload/fs/trash.scpt"), path]
 		var exit_code = OS.execute("osascript", arguments, output, true)
-		
-		print(arguments[1])
 	
 		if exit_code != 0:
 			push_error("Failed to trash: ", output)
