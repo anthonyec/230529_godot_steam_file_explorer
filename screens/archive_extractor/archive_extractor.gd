@@ -55,7 +55,7 @@ func extract(path: String) -> void:
 	var temp_path = temporary_extraction_directory.get_current_dir()
 	
 	FS.move(
-		FS.resolve_user_path(temp_path),
+		ProjectSettings.globalize_path(temp_path),
 		path.get_base_dir()
 	)
 		

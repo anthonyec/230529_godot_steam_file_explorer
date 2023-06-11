@@ -6,12 +6,12 @@ signal item_selected(file: File)
 
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var list: VBoxContainer = %List
+@onready var empty_state: CenterContainer = %EmptyState
 
 @export var enabled_files: String:
 	set = set_enabled_files
 
 var item_resource: Resource = preload("res://components/files/file.tscn")
-var empty_state_resource: Resource = preload("res://components/files/empty_state.tscn")
 
 var focused_file: File
 var files: Array[File] = []
@@ -64,8 +64,13 @@ func remove_item(item: FileItem) -> void:
 	
 func has_item_by_id(id: String) -> bool:
 	return id_to_item_map.has(id)
+	
+func get_item_by_id(id: String) -> FileItem:
+	return id_to_item_map[id]
 
 func set_files(id: String, new_files: Array[File]) -> void:
+	empty_state.visible = new_files.is_empty()
+		
 	# Blast away the whole list and start again if the ID has changed. This is
 	# so it does not animate between directory changes, where every file would 
 	# be new.
@@ -79,6 +84,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			var item = create_item(file)
 			add_item(item)
 		
+		focus_first_item()
 		return
 	
 	var file_ids: Dictionary = {}
@@ -124,15 +130,9 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		tween.tween_callback(func():
 			remove_item(child)
 		)
-
-func get_files() -> Array[File]:
-	return files
 	
-func get_first_item() -> Button:
-	return list.get_child(0) as Button
-	
-func get_focused_file() -> File:
-	return focused_file
+func get_first_item() -> FileItem:
+	return list.get_child(0) as FileItem
 	
 func focus_first_item() -> void:
 	var first_item = get_first_item()
@@ -141,12 +141,16 @@ func focus_first_item() -> void:
 		first_item.grab_focus()
 		
 func focus_item(index: int) -> void:
-	var item = list.get_child(0) as Button
+	var item = list.get_child(0) as FileItem
 	
 	if item:
 		item.grab_focus()
+		
+func focus_file(file: File) -> void:
+	if has_item_by_id(file.id):
+		get_item_by_id(file.id).grab_focus()
 	
-func scroll_into_view(item: Button) -> void:
+func scroll_into_view(item: FileItem) -> void:
 	var item_rect = item.get_rect()
 	var item_screen_position = item.get_screen_position()
 	var scroll_rect = scroll_container.get_rect()

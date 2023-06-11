@@ -83,10 +83,11 @@ func _on_context_menu_duplicate(file: File) -> void:
 	
 	FS.copy(file.path, base_directory + "/" + new_file_name)
 	browser_screen.reload()
+	browser_screen.file_list.focus_file(File.new(base_directory + "/" + new_file_name))
 	
 func _on_context_menu_trash(file: File) -> void:
-	print("_on_context_menu_trash")
 	FS.trash(file.path)
+	browser_screen.reload()
 	
 func _on_browser_show_options(file: File) -> void:
 	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
@@ -96,7 +97,8 @@ func _on_browser_show_options(file: File) -> void:
 		{ "label": "Reload", "callback": func(): browser_screen.reload() },
 		{ "label": "Move", "callback": _on_context_menu_move.bind(file) },
 		{ "label": "Duplicate", "callback": _on_context_menu_duplicate.bind(file) },
-		{ "label": "Info", "callback": func(): print("info!") },
+		{ "label": "Rename", "callback": func(): print("rename!") },
+		{ "label": "---" },
 		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) },
 	])
 
@@ -112,11 +114,17 @@ func _on_browser_select_current_directory(path: String) -> void:
 		
 	if AppState.moving_file.path.get_base_dir() == path:
 		print("Already exists in this folder, cancelling move")
+		browser_screen.file_list.focus_file(AppState.moving_file)
 		AppState.moving_file = null
 		return
 	
 	FS.move(AppState.moving_file.path, path)
+	
 	browser_screen.reload()
+	
+	var file = File.new(path + "/" + AppState.moving_file.file_name)
+	browser_screen.file_list.focus_file(file)
+	
 	AppState.moving_file = null
 
 func _on_app_state_moving_file_updated() -> void:

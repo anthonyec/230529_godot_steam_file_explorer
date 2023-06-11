@@ -25,23 +25,30 @@ enum InteractionMode {
 @onready var count_label: Label = %Count
 @onready var directory_action_button: Button = %DirectoryActionButton
 
+var watcher = DirectoryWatcher.new()
+
 func _ready() -> void:
 	super()
 	directory_action_button.visible = false
 	goto(current_path)
+	
+	add_child(watcher)
+	watcher.files_created.connect(_on_files_changed)
+	watcher.connect("files_modified", _on_files_changed)
+	watcher.connect("files_deleted", _on_files_changed)
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_released("ui_cancel", true):
 		_on_go_up_button_pressed()
 	
 	if event.is_action_released("options", true):
-		var focused_file = file_list.get_focused_file()
+		var focused_file = file_list.focused_file
 		
 		if focused_file:
 			show_options.emit(focused_file)
 			
 	if event.is_action_released("mark", true):
-		var focused_file = file_list.get_focused_file()
+		var focused_file = file_list.focused_file
 		focused_file.is_selected = !focused_file.is_selected
 		
 		SFX.play_everywhere("select")
@@ -70,6 +77,8 @@ func open(path: String) -> void:
 	open_file.emit(path)
 	
 func goto(path: String) -> void:
+	var old_path = current_path
+	
 	current_path = path
 	
 	var title = current_path.get_file()
@@ -81,6 +90,11 @@ func goto(path: String) -> void:
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
 	file_list.set_files(path, files)
+	
+	watcher.add_scan_directory(current_path)
+	
+	if old_path != current_path:
+		watcher.remove_scan_directory(old_path)
 	
 func reload() -> void:
 	goto(current_path)
@@ -185,3 +199,6 @@ func _on_go_up_button_pressed() -> void:
 
 func _on_directory_action_button_pressed() -> void:
 	select_current_directory.emit(current_path)
+	
+func _on_files_changed(paths) -> void:
+	reload()

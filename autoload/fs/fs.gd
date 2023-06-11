@@ -1,15 +1,5 @@
 extends Node
 
-# If the path contains "user://", resolve it to the absolute path specfic to OS.
-func resolve_user_path(path: String) -> String:
-	if path.begins_with("user://"):
-		var user_path = OS.get_user_data_dir()
-		
-		path = path.trim_prefix("user://")
-		path = user_path + "/" + path
-		
-	return path
-
 # Create a unique directory to access and store temporary files.
 func create_temporary_directory() -> DirAccess:
 	var timestamp = Time.get_unix_time_from_system()
