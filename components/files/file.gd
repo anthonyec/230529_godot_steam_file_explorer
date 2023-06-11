@@ -12,8 +12,8 @@ var file_icon_texture: Texture2D = preload("res://components/files/file_icon.tre
 func _ready() -> void:
 	file.connect("changed", _on_file_changed)
 	
-	var other_colors = 0 if file.is_selected else 1
-	var opacity = 0.2 if file.is_disabled else 1
+	var other_colors: float = 0.0 if file.is_selected else 1.0
+	var opacity: float = 0.2 if file.is_disabled else 1.0
 	
 	modulate = Color(other_colors, other_colors, other_colors, opacity)
 	disabled = file.is_disabled
@@ -31,16 +31,16 @@ func _ready() -> void:
 			icon_texture.texture = thumbnail_texture
 		)
 	
-func _on_file_changed(property_name: String, previous_value: Variant, next_value: Variant) -> void:
+func _on_file_changed(property_name: String, _previous_value: Variant, _next_value: Variant) -> void:
 	if property_name == "is_selected":
-		var other_colors = 0 if file.is_selected else 1
+		var other_colors: float = 0.0 if file.is_selected else 1.0
 		var tween = get_tree().create_tween()
 		tween.tween_property(self, "modulate", Color(other_colors, other_colors, other_colors, 1), 0.1)
 		tween.tween_property(self, "scale", Vector2(0.95, 0.95), 0.05)
 		tween.tween_property(self, "scale", Vector2(1, 1), 0.1)
 		
 	if property_name == "is_disabled":
-		var opacity = 0.2 if file.is_disabled == true else 1
+		var opacity: float = 0.2 if file.is_disabled == true else 1.0
 		var tween = get_tree().create_tween()
 		tween.tween_property(self, "modulate", Color(1, 1, 1, opacity), 0.5)
 	

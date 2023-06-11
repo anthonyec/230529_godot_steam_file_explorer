@@ -14,8 +14,12 @@ var process_thread: Thread
 var check_semaphore: Semaphore
 var process_semaphore: Semaphore
 
+var is_enabled: bool = false
+
 func _ready() -> void:
-	return
+	if not is_enabled:
+		return
+		
 	var user_directory_access = DirAccess.open("user://")
 	
 	if not user_directory_access.dir_exists("thumbnails"):
@@ -33,7 +37,9 @@ func _ready() -> void:
 	process_thread.start(process_queue_thread)
 	
 func _exit_tree():
-	return
+	if not is_enabled:
+		return
+		
 	should_terminate_threads = true
 	
 	check_semaphore.post()
@@ -125,7 +131,7 @@ func generate_thumbnail(path: String) -> Image:
 	var original_height: int = image.get_height()
 	var ratio: float = float(original_height) / float(original_width)
 	
-	var new_width: float = 100
+	var new_width: int = 100
 	var new_height: int = round(new_width * ratio)
 	
 	image.resize(new_width, new_height)
@@ -144,5 +150,4 @@ func generate_thumbnail(path: String) -> Image:
 	return image
 
 func debug_log(message: String) -> void:
-#	print(message)
-	pass
+	print(message)

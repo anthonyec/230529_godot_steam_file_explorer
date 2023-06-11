@@ -24,5 +24,5 @@ func _on_focus_entered() -> void:
 func _on_focus_exited() -> void:
 	set_process_input(false)
 
-func open(path: String) -> void:
+func open(_path: String) -> void:
 	pass

@@ -140,12 +140,6 @@ func focus_first_item() -> void:
 	if first_item:
 		first_item.grab_focus()
 		
-func focus_item(index: int) -> void:
-	var item = list.get_child(0) as FileItem
-	
-	if item:
-		item.grab_focus()
-		
 func focus_file(file: File) -> void:
 	if has_item_by_id(file.id):
 		get_item_by_id(file.id).grab_focus()

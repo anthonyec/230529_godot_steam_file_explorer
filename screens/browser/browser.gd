@@ -81,11 +81,11 @@ func goto(path: String) -> void:
 	
 	current_path = path
 	
-	var title = current_path.get_file()
+	var directory_title = current_path.get_file()
 	var files = get_directory_contents(current_path)
 	var count = files.size()
 	
-	title_label.text = title
+	title_label.text = directory_title
 	path_label.text = path
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
@@ -153,7 +153,7 @@ func get_directory_contents(path: String) -> Array[File]:
 	
 	return contents
 	
-func into_animation(reverse: bool = false) -> Signal:
+func into_animation() -> Signal:
 	var tween = get_tree().create_tween()
 	
 	tween.set_parallel(true)
@@ -162,7 +162,7 @@ func into_animation(reverse: bool = false) -> Signal:
 
 	return tween.finished
 	
-func outo_animation(reverse: bool = false) -> Signal:
+func outo_animation() -> Signal:
 	var tween = get_tree().create_tween()
 
 	tween.set_parallel(true)
@@ -171,7 +171,7 @@ func outo_animation(reverse: bool = false) -> Signal:
 	
 	return tween.finished
 	
-func _on_files_item_focused(file: File) -> void:
+func _on_files_item_focused(_file: File) -> void:
 	SFX.play_everywhere("highlight")
 
 func _on_files_item_selected(file: File) -> void:
@@ -193,12 +193,12 @@ func _on_go_up_button_pressed() -> void:
 	if new_path == ROOT_PATH:
 		return
 	
-	await into_animation(true)
+	await into_animation()
 	goto(new_path)
-	await outo_animation(true)
+	await outo_animation()
 
 func _on_directory_action_button_pressed() -> void:
 	select_current_directory.emit(current_path)
 	
-func _on_files_changed(paths) -> void:
+func _on_files_changed(_paths: Array[String]) -> void:
 	reload()

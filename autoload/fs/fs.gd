@@ -3,11 +3,11 @@ extends Node
 # Create a unique directory to access and store temporary files.
 func create_temporary_directory() -> DirAccess:
 	var timestamp = Time.get_unix_time_from_system()
-	var seed = randf()
+	var random_number = randf()
 	
-	var name = str(seed) + str(timestamp)
-	var hash = name.md5_text()
-	var temp_path = "temp/" + hash
+	var generated_name = str(random_number) + str(timestamp)
+	var hashed_generated_name = generated_name.md5_text()
+	var temp_path = "temp/" + hashed_generated_name
 	
 	var dir_access = DirAccess.open("user://")
 	
@@ -19,7 +19,8 @@ func create_temporary_directory() -> DirAccess:
 	dir_access.change_dir(temp_path)
 	
 	return dir_access
-	
+
+# Move a directory or file to the system's trash bin.
 func trash(path: String) -> void:
 	if OS.get_name() == "Linux":
 		var output: Array = []
@@ -36,7 +37,7 @@ func trash(path: String) -> void:
 		if exit_code != 0:
 			push_error("Failed to trash: ", output)
 
-# Move a direcotry or file.
+# Move a directory or file.
 # TODO: Return an erro result.
 func move(from: String, to: String) -> void:
 	var output: Array = []
