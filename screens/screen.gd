@@ -12,6 +12,9 @@ func _ready() -> void:
 	connect("focus_entered", _on_focus_entered)
 	connect("focus_exited", _on_focus_exited)
 	
+func _exit_tree() -> void:
+	queue_free()
+	
 func maximize_screen(screen: Screen) -> void:
 	var viewport_size = get_parent().get_viewport().size
 	

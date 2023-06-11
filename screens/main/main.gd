@@ -83,7 +83,7 @@ func _on_context_menu_duplicate(file: File) -> void:
 	
 	FS.copy(file.path, base_directory + "/" + new_file_name)
 	browser_screen.reload()
-	browser_screen.file_list.focus_file(File.new(base_directory + "/" + new_file_name))
+	browser_screen.file_list.focus_file_by_id(File.get_id_from_path(base_directory + "/" + new_file_name))
 	
 func _on_context_menu_trash(file: File) -> void:
 	FS.trash(file.path)
@@ -122,8 +122,7 @@ func _on_browser_select_current_directory(path: String) -> void:
 	
 	browser_screen.reload()
 	
-	var file = File.new(path + "/" + AppState.moving_file.file_name)
-	browser_screen.file_list.focus_file(file)
+	browser_screen.file_list.focus_file_by_id(File.get_id_from_path(path + "/" + AppState.moving_file.file_name))
 	
 	AppState.moving_file = null
 

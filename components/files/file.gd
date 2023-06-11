@@ -30,6 +30,11 @@ func _ready() -> void:
 			var thumbnail_texture = ImageTexture.create_from_image(image)
 			icon_texture.texture = thumbnail_texture
 		)
+		
+func _exit_tree() -> void:
+	file.queue_free() # @PREVENT_MEMORY_LEAK
+	
+	queue_free() # @PREVENT_MEMORY_LEAK
 	
 func _on_file_changed(property_name: String, _previous_value: Variant, _next_value: Variant) -> void:
 	if property_name == "is_selected":

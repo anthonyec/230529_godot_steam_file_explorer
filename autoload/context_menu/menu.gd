@@ -45,6 +45,10 @@ func _input(event: InputEvent) -> void:
 		await animate_out()
 		close.emit()
 		
+func _exit_tree() -> void:
+	queue_free() # @PREVENT_MEMORY_LEAK
+	
+		
 func _on_focus_exited() -> void:
 	if is_closing:
 		return

@@ -145,7 +145,11 @@ func focus_first_item() -> void:
 		
 func focus_file(file: File) -> void:
 	if has_item_by_id(file.id):
-		get_item_by_id(file.id).grab_focus()
+		focus_file_by_id(file.id)
+		
+func focus_file_by_id(id: String) -> void:
+	if has_item_by_id(id):
+		get_item_by_id(id).grab_focus()
 	
 func scroll_into_view(item: FileItem) -> void:
 	var item_rect = item.get_rect()
