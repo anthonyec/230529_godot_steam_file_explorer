@@ -200,5 +200,5 @@ func _on_go_up_button_pressed() -> void:
 func _on_directory_action_button_pressed() -> void:
 	select_current_directory.emit(current_path)
 	
-func _on_files_changed(_paths: Array[String]) -> void:
+func _on_files_changed(_paths) -> void:
 	reload()

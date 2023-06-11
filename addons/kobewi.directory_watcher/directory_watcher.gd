@@ -19,11 +19,11 @@ var scan_delay: float = 1
 var scan_step := 50
 
 ## Emitted when files are created in the scanned directories.
-signal files_created(files: Array[String])
+signal files_created(files)
 ## Emitted when files are modified in the scanned directories (based on modified time).
-signal files_modified(files: Array[String])
+signal files_modified(files)
 ## Emitted when files are deleted in the scanned directories.
-signal files_deleted(files: Array[String])
+signal files_deleted(files)
 
 func _ready() -> void:
 	_current_delay = scan_delay

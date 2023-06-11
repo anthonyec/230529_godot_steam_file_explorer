@@ -38,11 +38,17 @@ func _input(event: InputEvent) -> void:
 		invoke_action(selected[0])
 		
 	if Input.is_action_just_released("ui_cancel", true) or Input.is_action_just_pressed("options", true):
+		if is_closing:
+			return
+			
 		is_closing = true
 		await animate_out()
 		close.emit()
 		
 func _on_focus_exited() -> void:
+	if is_closing:
+		return
+		
 	is_closing = true
 	await animate_out()
 	close.emit()
@@ -85,6 +91,10 @@ func invoke_action(index: int) -> void:
 		var callback = option.get("callback")
 		
 		callback.call()
+		
+		if is_closing:
+			return
+			
 		is_closing = true
 		await animate_out()
 		close.emit()

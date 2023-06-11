@@ -22,7 +22,7 @@ func show(title: String, options: Array[Dictionary]) -> void:
 	SFX.play_everywhere("deselect")
 
 func _on_menu_close() -> void:
-	remove_child.call_deferred(current_menu)
+	remove_child(current_menu)
 	current_menu = null
 	
 	await get_tree().create_timer(0.1).timeout
