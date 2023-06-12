@@ -11,7 +11,7 @@ signal item_selected(file: File)
 @export var enabled_files: String:
 	set = set_enabled_files
 
-var item_resource: Resource = preload("res://components/files/file.tscn")
+const item_resource: Resource = preload("res://components/files/file.tscn")
 
 var focused_file: File
 var files: Array[File] = []

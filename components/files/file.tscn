@@ -3,7 +3,8 @@
 [ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="1_rmsl5"]
 [ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://components/files/button_style_focus.tres" id="2_t81wv"]
 [ext_resource type="Script" path="res://components/files/file.gd" id="3_1mi4i"]
-[ext_resource type="Texture2D" uid="uid://0g174k6kdbwp" path="res://components/files/folder_icon.tres" id="4_xecav"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_8op8j"]
 
 [node name="File" type="Button"]
 custom_minimum_size = Vector2(200, 60)
@@ -40,7 +41,7 @@ layout_mode = 2
 [node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-texture = ExtResource("4_xecav")
+texture = SubResource("CompressedTexture2D_8op8j")
 expand_mode = 2
 stretch_mode = 5
 

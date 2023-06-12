@@ -1,5 +1,9 @@
 extends Node
 
+enum MoveError {
+	FILE_OR_DIRECTORY_DOES_NOT_EXIST
+}
+
 # Create a unique directory to access and store temporary files.
 func create_temporary_directory() -> DirAccess:
 	var timestamp = Time.get_unix_time_from_system()
