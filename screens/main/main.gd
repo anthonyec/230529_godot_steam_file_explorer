@@ -1,12 +1,20 @@
 extends Control
 
 @onready var browser_screen: Browser = %Browser as Browser
+@onready var status_bar: StatusBar = %StatusBar as StatusBar
 
 var current_screen: Window = null
 
 func _ready() -> void:
 	AppState.connect("moving_file_updated", _on_app_state_moving_file_updated)
 	ContextMenu.connect("menu_closed", _on_context_menu_closed)
+	
+	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
+	_on_screen_focus_entered(browser_screen)
+	
+func _on_screen_focus_entered(screen: Screen) -> void:
+	var controls = screen.get_controls()
+	status_bar.set_controls(controls)
 
 func open_screen(screen_name: String, path: String) -> void:
 	var screen_resource: Resource = load("res://screens/" + screen_name + "/" + screen_name + ".tscn")
@@ -24,13 +32,18 @@ func open_screen(screen_name: String, path: String) -> void:
 	if not screen.has_signal("close"):
 		push_error("Screen does not have `close` signal: ", screen_name)
 		return
-
-	# Show the new screen.
+	
+	# Assign as current screen.
 	current_screen = screen
+	
+	# Setup the new screen with signals.
+	current_screen.connect("close", _on_screen_close)
+	current_screen.connect("focus_entered", _on_screen_focus_entered.bind(current_screen))
+	
+	# Show the new screen.
 	add_child(current_screen)
 	
-	# Setup the new screen.
-	current_screen.connect("close", _on_screen_close)
+	# Tell the screen it's now open.
 	current_screen.open(path)
 	
 	# Focus the new screen.

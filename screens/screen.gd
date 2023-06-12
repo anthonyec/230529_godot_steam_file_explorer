@@ -37,3 +37,6 @@ func _on_focus_exited() -> void:
 
 func open(_path: String) -> void:
 	pass
+
+func get_controls() -> Dictionary:
+	return {}

@@ -1,8 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://caxr88sxhnqy7"]
+[gd_scene load_steps=4 format=3 uid="uid://bhcgmjycvxlq3"]
 
 [ext_resource type="Script" path="res://screens/main/main.gd" id="1_mxl15"]
 [ext_resource type="PackedScene" uid="uid://badj81wnpdasc" path="res://screens/browser/browser.tscn" id="1_qd2qa"]
-[ext_resource type="PackedScene" uid="uid://c3p6dgpoorpnj" path="res://components/control_bar/control_bar.tscn" id="3_cxoev"]
+[ext_resource type="PackedScene" uid="uid://cekdgi7n3b31t" path="res://components/status_bar/status_bar.tscn" id="3_cxoev"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -16,12 +16,8 @@ script = ExtResource("1_mxl15")
 [node name="Browser" parent="." instance=ExtResource("1_qd2qa")]
 unique_name_in_owner = true
 
-[node name="ControlBar" parent="." instance=ExtResource("3_cxoev")]
-unresizable = true
-borderless = true
-always_on_top = true
-unfocusable = true
-mouse_passthrough = true
+[node name="StatusBar" parent="." instance=ExtResource("3_cxoev")]
+unique_name_in_owner = true
 
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]
 [connection signal="select_current_directory" from="Browser" to="." method="_on_browser_select_current_directory"]

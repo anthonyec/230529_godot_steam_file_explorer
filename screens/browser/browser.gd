@@ -55,6 +55,7 @@ func _input(event: InputEvent) -> void:
 		
 		SFX.play_everywhere("select")
 		
+		
 func get_controls() -> Dictionary:
 	return {
 		"ui_cancel": {
