@@ -17,8 +17,16 @@ func _exit_tree() -> void:
 	
 func maximize_screen(screen: Screen) -> void:
 	var viewport_size = get_parent().get_viewport().size
+		
+	# TDOO: Ideally the main scene would control this, but oh well.
+	var control_bar = get_parent().get_node_or_null("ControlBar")
+	var control_bar_height: int = 0
 	
-	screen.size = Vector2i(viewport_size.x, viewport_size.y)
+	if control_bar:
+		control_bar = control_bar as Window
+		control_bar_height = control_bar.size.y
+	
+	screen.size = Vector2i(viewport_size.x, viewport_size.y - control_bar_height)
 	screen.position = Vector2i(0, 0)
 	
 func _on_focus_entered() -> void:

@@ -23,7 +23,7 @@ mouse_filter = 2
 
 [node name="Label" type="Label" parent="EmptyState"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 0.470588)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 30
 text = "No files"
 

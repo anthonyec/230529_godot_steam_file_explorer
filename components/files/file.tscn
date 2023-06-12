@@ -40,6 +40,7 @@ layout_mode = 2
 
 [node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer"]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.403922)
 layout_mode = 2
 texture = SubResource("CompressedTexture2D_8op8j")
 expand_mode = 2
@@ -49,6 +50,7 @@ stretch_mode = 5
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
 text = "File name"
 text_overrun_behavior = 3
