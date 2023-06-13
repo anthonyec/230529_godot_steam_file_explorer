@@ -1,13 +1,19 @@
 extends Screen
 
-@onready var texture_rect: TextureRect = %TextureRect as TextureRect
+@onready var close_button: Button = %CloseButton
+@onready var text_edit: TextEdit = %TextEdit
 
 func _ready() -> void:
 	super()
-	$Panel/CloseButton.grab_focus()
+	close_button.grab_focus()
 
 func open(path: String) -> void:
-	pass
+	var file = FileAccess.open(path, FileAccess.READ)
+	
+	if not file:
+		return
+		
+	text_edit.text = file.get_as_text()
 
 func _on_close_button_pressed() -> void:
 	close.emit()

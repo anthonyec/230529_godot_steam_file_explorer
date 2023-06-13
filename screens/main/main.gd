@@ -72,7 +72,7 @@ func _on_browser_open_file(path: String) -> void:
 		return
 	
 	match path.get_extension():
-		"json", "txt":
+		"json", "txt", "md":
 			SFX.play_everywhere("select")
 			open_screen("text_viewer", path)
 		"png":

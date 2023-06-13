@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://screens/text_viewer/text_viewer.gd" id="1_ra1j1"]
 
 [node name="TextViewer" type="Window"]
+size = Vector2i(500, 300)
 script = ExtResource("1_ra1j1")
 
 [node name="Panel" type="Panel" parent="."]
@@ -12,25 +13,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CloseButton" type="Button" parent="Panel"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CloseButton" type="Button" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
-layout_mode = 0
-offset_left = 44.0
-offset_top = 18.0
-offset_right = 94.0
-offset_bottom = 49.0
+layout_mode = 2
 text = "Close
 "
 
-[node name="TextureRect" type="TextureRect" parent="Panel"]
+[node name="TextEdit" type="TextEdit" parent="Panel/VBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(500, 500)
-layout_mode = 0
-offset_left = 394.0
-offset_top = 122.0
-offset_right = 894.0
-offset_bottom = 622.0
-expand_mode = 3
-stretch_mode = 5
+layout_mode = 2
+size_flags_vertical = 3
+editable = false
 
-[connection signal="pressed" from="Panel/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
