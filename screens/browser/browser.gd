@@ -165,14 +165,8 @@ func get_directory_contents(path: String) -> Array[File]:
 	var file_name = dir_access.get_next()
 		
 	while file_name != "":
-		var new_file = File.new()
 		var full_path = dir_access.get_current_dir() + DELIMITER + file_name
-		
-		new_file.id = full_path.md5_text()
-		new_file.file_name = file_name
-		new_file.extension = file_name.get_extension()
-		new_file.path = full_path
-		new_file.is_directory = dir_access.current_is_dir()
+		var new_file = File.new(full_path, dir_access.current_is_dir())
 		
 		# Add file to list.
 		contents.append(new_file)

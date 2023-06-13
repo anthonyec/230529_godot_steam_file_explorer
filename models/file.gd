@@ -13,12 +13,13 @@ var is_directory: bool: set = set_is_directory
 var is_disabled: bool: set = set_is_disabled
 var is_selected: bool: set = set_is_selected
 
-func _init(from_path: String = "") -> void:
+func _init(from_path: String = "", directory: bool = false) -> void:
 	if from_path:
 		id = File.get_id_from_path(from_path)
 		file_name = from_path.get_file()
 		extension = from_path.get_extension()
 		path = from_path
+		is_directory = directory
 		
 static func get_id_from_path(_path: String) -> String:
 	return _path.md5_text()

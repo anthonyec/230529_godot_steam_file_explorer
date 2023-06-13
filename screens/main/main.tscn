@@ -15,6 +15,7 @@ script = ExtResource("1_mxl15")
 
 [node name="Browser" parent="." instance=ExtResource("1_qd2qa")]
 unique_name_in_owner = true
+interaction_mode = null
 
 [node name="StatusBar" parent="." instance=ExtResource("3_cxoev")]
 unique_name_in_owner = true

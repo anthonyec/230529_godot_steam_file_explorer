@@ -4,6 +4,11 @@ enum MoveError {
 	FILE_OR_DIRECTORY_DOES_NOT_EXIST
 }
 
+var duplicate_regex = RegEx.new()
+
+func _ready() -> void:
+	duplicate_regex.compile("\\scopy(\\s\\d+)?$")
+
 # Create a unique directory to access and store temporary files.
 func create_temporary_directory() -> DirAccess:
 	var timestamp = Time.get_unix_time_from_system()
@@ -128,11 +133,8 @@ func get_next_file_name(path: String) -> String:
 	var plain_name = get_file_name_without_extension(path)
 	var extension = get_extension(path, true)
 	
-	var regex = RegEx.new()
-	regex.compile("\\scopy(\\s\\d+)?$")
-	
-	var copy_suffix = regex.search(plain_name)
-	var name_without_suffix = regex.sub(plain_name, "")
+	var copy_suffix = duplicate_regex.search(plain_name)
+	var name_without_suffix = duplicate_regex.sub(plain_name, "")
 	var tries: int = 2
 #
 	if copy_suffix:
@@ -146,5 +148,5 @@ func get_next_file_name(path: String) -> String:
 	while exists(base_directory + "/" + new_file_name):
 		new_file_name = name_without_suffix + " copy " + str(tries) + extension
 		tries += 1
-
+	
 	return new_file_name

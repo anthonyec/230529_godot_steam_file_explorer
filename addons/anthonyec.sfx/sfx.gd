@@ -2,7 +2,7 @@ extends Node3D
 
 const RANDOM_NUMBER_PLACEHOLDER = "[%n]"
 
-var number_suffix_regex: RegEx = null
+var number_suffix_regex: RegEx = RegEx.new()
 var is_loaded: bool = false
 
 # Where all the sounds are stored, with the name as their key and their loaded
@@ -16,7 +16,6 @@ func _ready() -> void:
 		push_warning("No sounds directory has been set in Project Settings. See setup instructions in the README file: res://addons/anthonyec.sfx/README.md")
 		return
 
-	number_suffix_regex = RegEx.new()
 	number_suffix_regex.compile("\\d+$")
 
 	var sound_files: Array[String] = []
