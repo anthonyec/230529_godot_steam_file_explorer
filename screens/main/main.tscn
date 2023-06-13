@@ -18,7 +18,7 @@ unique_name_in_owner = true
 
 [node name="StatusBar" parent="." instance=ExtResource("3_cxoev")]
 unique_name_in_owner = true
-visible = false
+position = Vector2i(0, 800)
 
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]
 [connection signal="select_current_directory" from="Browser" to="." method="_on_browser_select_current_directory"]

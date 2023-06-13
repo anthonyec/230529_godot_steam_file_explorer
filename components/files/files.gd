@@ -118,7 +118,16 @@ func set_files(id: String, new_files: Array[File]) -> void:
 
 		if not file_ids.has(item.file.id):
 			children_to_remove.append(item)
+	
+	# Focus previous item if the current one is going to be removed.
+	var child_count_after_removal = list.get_child_count() - children_to_remove.size()
+	
+	if not children_to_remove.is_empty() and child_count_after_removal > 0:
+		var previous_child_index = children_to_remove[0].get_index() - 1
+		var previous_child = list.get_child(previous_child_index)
 
+		focus_file(previous_child.file)
+		
 	## TODO: Can avoid additional loop I think by making the above loop reversed.
 	for child in children_to_remove:
 		var tween = get_tree().create_tween()

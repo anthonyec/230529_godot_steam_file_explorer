@@ -19,14 +19,14 @@ func maximize_screen(screen: Screen) -> void:
 	var viewport_size = get_parent().get_viewport().size
 		
 	# TDOO: Ideally the main scene would control this, but oh well.
-	var control_bar = get_parent().get_node_or_null("ControlBar")
-	var control_bar_height: int = 0
+	var status_bar = get_parent().get_node_or_null("StatusBar")
+	var status_bar_height: int = 0
 	
-	if control_bar:
-		control_bar = control_bar as Window
-		control_bar_height = control_bar.size.y
+	if status_bar:
+		status_bar = status_bar as Window
+		status_bar_height = status_bar.size.y
 	
-	screen.size = Vector2i(viewport_size.x, viewport_size.y - control_bar_height)
+	screen.size = Vector2i(viewport_size.x, viewport_size.y - status_bar_height)
 	screen.position = Vector2i(0, 0)
 	
 func _on_focus_entered() -> void:
