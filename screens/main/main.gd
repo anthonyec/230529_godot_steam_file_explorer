@@ -1,12 +1,13 @@
+class_name Main
 extends Control
 
 @onready var browser_screen: Browser = %Browser as Browser
 @onready var status_bar: StatusBar = %StatusBar as StatusBar
+@onready var state_machine: StateMachine = $StateMachine as StateMachine
 
 var current_screen: Window = null
 
 func _ready() -> void:
-	AppState.connect("moving_file_updated", _on_app_state_moving_file_updated)
 	ContextMenu.connect("menu_closed", _on_context_menu_closed)
 	
 	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
@@ -87,12 +88,11 @@ func _on_browser_open_file(path: String) -> void:
 			SFX.play_everywhere("invalid")
 
 func _on_context_menu_move(file: File) -> void:
-	# A new `File` is created because the original file will be freed when the 
-	# list changed and items are removed.
-	var duplicate_file = File.new(file.path)
-	
-	AppState.moving_file = duplicate_file
-	browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
+	state_machine.send_message("start_moving_file", {
+		# A new `File` is created because the original file will be freed when the 
+		# list changed and items are removed.
+		"file": File.new(file.path)
+	})
 	
 func _on_context_menu_duplicate(file: File) -> void:
 	var new_file_name = FS.get_next_file_name(file.path)
@@ -106,8 +106,14 @@ func _on_context_menu_trash(file: File) -> void:
 	FS.trash(file.path)
 	browser_screen.reload()
 	
+func _on_context_menu_closed() -> void:
+	browser_screen.grab_focus()
+
+	if current_screen:
+		current_screen.grab_focus()
+	
 func _on_browser_show_options(file: File) -> void:
-	if AppState.browser_mode != AppState.BrowserMode.DEFAULT:
+	if state_machine.current_state.name != "Default":
 		return
 
 	ContextMenu.show("Options for " + file.file_name, [
@@ -119,37 +125,8 @@ func _on_browser_show_options(file: File) -> void:
 		{ "label": "Trash", "callback": _on_context_menu_trash.bind(file) },
 	])
 
-func _on_context_menu_closed() -> void:
-	browser_screen.grab_focus()
-
-	if current_screen:
-		current_screen.grab_focus()
-
 func _on_browser_select_current_directory(path: String) -> void:
-	if AppState.moving_file == null:
-		AppState.moving_file.queue_free()
-		return
-		
-	if AppState.moving_file.path.get_base_dir() == path:
-		print("Already exists in this folder, cancelling move")
-		browser_screen.file_list.focus_file(AppState.moving_file)
-		AppState.moving_file.queue_free()
-		AppState.moving_file = null
-		return
+	state_machine.send_message("move_to_directory", {
+		"path": path
+	})
 	
-	print("AppState.moving_file.path: ", AppState.moving_file)
-	print("AppState.moving_file.path: ", AppState.moving_file.name)
-	print("path: ", path)
-	
-	FS.move(AppState.moving_file.path, path)
-	
-	browser_screen.reload()
-	browser_screen.file_list.focus_file_by_id(File.get_id_from_path(path + "/" + AppState.moving_file.file_name))
-	
-	AppState.moving_file = null
-
-func _on_app_state_moving_file_updated() -> void:
-	if AppState.moving_file != null:
-		browser_screen.interaction_mode = browser_screen.InteractionMode.SELECT_DIRECTORY
-	else:
-		browser_screen.interaction_mode = browser_screen.InteractionMode.BROWSE

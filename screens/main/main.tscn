@@ -1,8 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://bhcgmjycvxlq3"]
+[gd_scene load_steps=8 format=3 uid="uid://bhcgmjycvxlq3"]
 
 [ext_resource type="Script" path="res://screens/main/main.gd" id="1_mxl15"]
 [ext_resource type="PackedScene" uid="uid://badj81wnpdasc" path="res://screens/browser/browser.tscn" id="1_qd2qa"]
+[ext_resource type="PackedScene" uid="uid://cugjrmwt16ejf" path="res://components/state_machine/state_machine.tscn" id="2_tpehs"]
 [ext_resource type="PackedScene" uid="uid://cekdgi7n3b31t" path="res://components/status_bar/status_bar.tscn" id="3_cxoev"]
+[ext_resource type="PackedScene" uid="uid://bt1l6u0dxhrsp" path="res://components/state_machine/state.tscn" id="3_q6n2g"]
+[ext_resource type="Script" path="res://screens/main/states/default.gd" id="4_ud3lq"]
+[ext_resource type="Script" path="res://screens/main/states/moving_file.gd" id="5_kafqh"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -13,9 +17,16 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_mxl15")
 
+[node name="StateMachine" parent="." instance=ExtResource("2_tpehs")]
+
+[node name="Default" parent="StateMachine" instance=ExtResource("3_q6n2g")]
+script = ExtResource("4_ud3lq")
+
+[node name="MoveFile" parent="StateMachine" instance=ExtResource("3_q6n2g")]
+script = ExtResource("5_kafqh")
+
 [node name="Browser" parent="." instance=ExtResource("1_qd2qa")]
 unique_name_in_owner = true
-interaction_mode = null
 
 [node name="StatusBar" parent="." instance=ExtResource("3_cxoev")]
 unique_name_in_owner = true
