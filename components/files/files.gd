@@ -66,6 +66,9 @@ func has_item_by_id(id: String) -> bool:
 	return id_to_item_map.has(id)
 	
 func get_item_by_id(id: String) -> FileItem:
+	if not has_item_by_id(id):
+		return null
+		
 	return id_to_item_map[id]
 
 func set_files(id: String, new_files: Array[File]) -> void:
@@ -130,6 +133,8 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		
 	## TODO: Can avoid additional loop I think by making the above loop reversed.
 	for child in children_to_remove:
+		# TODO: Set correct up and down neighbours so that a file can't be 
+		# focused during it's removal animation.
 		var tween = get_tree().create_tween()
 		
 		tween.set_ease(Tween.EASE_IN_OUT)

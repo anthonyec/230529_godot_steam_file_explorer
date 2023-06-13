@@ -12,7 +12,6 @@ bg_color = Color(0.886275, 0.905882, 0.933333, 1)
 title = "Browser"
 size = Vector2i(1280, 800)
 script = ExtResource("1_pf074")
-interaction_mode = null
 
 [node name="Panel" type="Panel" parent="."]
 anchors_preset = 15

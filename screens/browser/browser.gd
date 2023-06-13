@@ -2,6 +2,8 @@ class_name Browser
 extends Screen
 
 signal open_file(path: String)
+signal grab_file(file: File, strength: float)
+signal grab_ended
 signal show_options(file: File)
 signal select_current_directory(path: String)
 
@@ -26,6 +28,7 @@ enum InteractionMode {
 @onready var directory_action_button: Button = %DirectoryActionButton
 
 var is_changing_directory: bool = false
+var was_grabbing: bool = false
 
 #var watcher = DirectoryWatcher.new()
 
@@ -51,9 +54,22 @@ func _input(event: InputEvent) -> void:
 			
 	if event.is_action_released("mark", true):
 		var focused_file = file_list.focused_file
-		focused_file.is_selected = !focused_file.is_selected
 		
-		SFX.play_everywhere("select")
+		if focused_file:
+			focused_file.is_selected = !focused_file.is_selected
+			SFX.play_everywhere("select")
+		
+	if event.is_action_released("grab", true) and was_grabbing:
+		grab_ended.emit()
+		was_grabbing = false
+		return
+		
+	if event.is_action_pressed("grab", true):
+		var focused_file = file_list.focused_file
+		
+		if focused_file:
+			grab_file.emit(focused_file, event.get_action_strength("grab", true))
+			was_grabbing = true
 		
 		
 func get_controls() -> Dictionary:

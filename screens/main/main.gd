@@ -73,7 +73,7 @@ func _on_browser_open_file(path: String) -> void:
 		return
 	
 	match path.get_extension():
-		"json", "txt", "md":
+		"json", "txt", "md", "csv", "xml", "ini", "confg", "toml":
 			SFX.play_everywhere("select")
 			open_screen("text_viewer", path)
 		"png":
@@ -91,7 +91,7 @@ func _on_context_menu_move(file: File) -> void:
 	state_machine.send_message("start_moving_file", {
 		# A new `File` is created because the original file will be freed when the 
 		# list changed and items are removed.
-		"file": File.new(file.path)
+		"file": File.new(file.path, file.is_directory)
 	})
 	
 func _on_context_menu_duplicate(file: File) -> void:
@@ -130,3 +130,11 @@ func _on_browser_select_current_directory(path: String) -> void:
 		"path": path
 	})
 	
+func _on_browser_grab_file(file: File, strength: float) -> void:
+	state_machine.send_message("grabbing_file", {
+		"file": File.new(file.path, file.is_directory),
+		"strength": strength
+	})
+
+func _on_browser_grab_ended() -> void:
+	state_machine.send_message("stop_grabbing_file")
