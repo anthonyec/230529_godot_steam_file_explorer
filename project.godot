@@ -15,7 +15,7 @@ sfx/sounds="res://audio"
 [application]
 
 config/name="230529_godot_steam_file_explorer"
-run/main_scene="res://screens/shell/shell.tscn"
+run/main_scene="res://screens/main/main.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
 run/low_processor_mode=true
 boot_splash/bg_color=Color(0, 0, 0, 1)

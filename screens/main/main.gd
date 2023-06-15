@@ -1,4 +1,4 @@
-class_name Shell
+class_name Main
 extends Control
 
 @onready var browser_screen: Browser = %Browser as Browser
