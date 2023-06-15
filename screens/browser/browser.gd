@@ -2,10 +2,6 @@ class_name Browser
 extends Screen
 
 signal open_file(path: String)
-signal grab_file(file: File, strength: float)
-signal grab_ended
-signal show_options(file: File)
-signal select_current_directory(path: String)
 
 # TODO: Make dynamic to handle Windows?? : (
 const DELIMITER = "/"
@@ -17,8 +13,6 @@ enum InteractionMode {
 }
 
 @export var current_path: String = OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder" 
-@export var interaction_mode: InteractionMode:
-	set = set_interaction_mode
 
 @onready var file_list: Files = %Files as Files
 @onready var go_up_button: Button = %GoUpButton
@@ -26,6 +20,7 @@ enum InteractionMode {
 @onready var path_label: Label = %Path
 @onready var count_label: Label = %Count
 @onready var directory_action_button: Button = %DirectoryActionButton
+@onready var state_machine: StateMachine = $StateMachine as StateMachine
 
 var is_changing_directory: bool = false
 var was_grabbing: bool = false
@@ -34,7 +29,6 @@ var was_grabbing: bool = false
 
 func _ready() -> void:
 	super()
-	directory_action_button.visible = false
 	goto(current_path)
 	
 #	add_child(watcher)
@@ -47,10 +41,7 @@ func _input(event: InputEvent) -> void:
 		_on_go_up_button_pressed()
 	
 	if event.is_action_released("options", true):
-		var focused_file = file_list.focused_file
-		
-		if focused_file:
-			show_options.emit(focused_file)
+		show_file_options()
 			
 	if event.is_action_released("mark", true):
 		var focused_file = file_list.focused_file
@@ -58,19 +49,6 @@ func _input(event: InputEvent) -> void:
 		if focused_file:
 			focused_file.is_selected = !focused_file.is_selected
 			SFX.play_everywhere("select")
-		
-	if event.is_action_released("grab", true) and was_grabbing:
-		grab_ended.emit()
-		was_grabbing = false
-		return
-		
-	if event.is_action_pressed("grab", true):
-		var focused_file = file_list.focused_file
-		
-		if focused_file:
-			grab_file.emit(focused_file, event.get_action_strength("grab", true))
-			was_grabbing = true
-		
 		
 func get_controls() -> Dictionary:
 	return {
@@ -80,11 +58,7 @@ func get_controls() -> Dictionary:
 		},
 		"options": {
 			"label": "Options",
-			"callback": func():
-				var focused_file = file_list.focused_file
-
-				if focused_file:
-					show_options.emit(focused_file) \
+			"callback": func(): pass
 		},
 		"mark": {
 			"label": "Select",
@@ -97,17 +71,48 @@ func get_controls() -> Dictionary:
 			"label": "Open"
 		}
 	}
-
-func set_interaction_mode(value: InteractionMode) -> void:
-	interaction_mode = value               
 	
-	if interaction_mode == InteractionMode.SELECT_DIRECTORY:
-		directory_action_button.visible = true
-		directory_action_button.text = "Move to this folder"
-		file_list.enabled_files = "directories"
-	else:
-		directory_action_button.visible = false
-		file_list.enabled_files = "all"
+func show_file_options() -> void:
+	if state_machine.current_state.name != "Default":
+		return
+	
+	var focused_file = file_list.focused_file
+		
+	if not focused_file:
+		return
+	
+	# A new `File` is created because the original file will be freed when 
+	# the list changes and items are removed.
+	var file = File.new(focused_file.path, focused_file.is_directory)
+	
+	ContextMenu.show("Options for " + file.file_name, [
+		{ "label": "Reload", "callback": reload }, # TODO: Move this somewhere else, it's not file specfic!
+		{ "label": "Move", "callback": move_file.bind(file) },
+		{ "label": "Duplicate", "callback": duplicate_file.bind(file) },
+		{ "label": "Rename", "callback": rename_file.bind(file) },
+		{ "label": "---" },
+		{ "label": "Trash", "callback": trash_file.bind(file) },
+	])
+	
+func move_file(file: File) -> void:
+	state_machine.send_message("move_file", {
+		"file": file
+	})
+	
+func duplicate_file(file: File) -> void:
+	var new_file_name = FS.get_next_file_name(file.path)
+	var base_directory = file.path.get_base_dir()
+	
+	FS.copy(file.path, base_directory + "/" + new_file_name)
+	reload()
+	file_list.focus_file_by_id(File.get_id_from_path(base_directory + "/" + new_file_name))
+	
+func rename_file(file: File) -> void:
+	print("Implement: rename file")
+	
+func trash_file(file: File) -> void:
+	FS.trash(file.path)
+	reload()
 	
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:
@@ -240,9 +245,6 @@ func _on_go_up_button_pressed() -> void:
 	await into_animation()
 	goto(new_path)
 	await outo_animation()
-
-func _on_directory_action_button_pressed() -> void:
-	select_current_directory.emit(current_path)
 	
 func _on_files_changed(_paths) -> void:
 	reload()

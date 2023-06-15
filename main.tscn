@@ -1,12 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://r4xj3viohgik"]
+[gd_scene load_steps=4 format=3 uid="uid://r4xj3viohgik"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_rsgxp"]
-[ext_resource type="PackedScene" uid="uid://cugjrmwt16ejf" path="res://components/state_machine/state_machine.tscn" id="2_wvfuo"]
-[ext_resource type="PackedScene" uid="uid://bt1l6u0dxhrsp" path="res://components/state_machine/state.tscn" id="3_41sqx"]
-[ext_resource type="Script" path="res://states/default.gd" id="4_kevci"]
-[ext_resource type="Script" path="res://states/wiggle_file.gd" id="5_mpyve"]
-[ext_resource type="Script" path="res://states/moving_file.gd" id="6_h72j5"]
-[ext_resource type="PackedScene" uid="uid://badj81wnpdasc" path="res://screens/browser/browser.tscn" id="7_75nwx"]
+[ext_resource type="PackedScene" uid="uid://dkdw01mwgy8xb" path="res://screens/browser/browser.tscn" id="7_75nwx"]
 [ext_resource type="PackedScene" uid="uid://cekdgi7n3b31t" path="res://components/status_bar/status_bar.tscn" id="8_vjldc"]
 
 [node name="Main" type="Control"]
@@ -18,17 +13,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_rsgxp")
 
-[node name="StateMachine" parent="." instance=ExtResource("2_wvfuo")]
-
-[node name="Default" parent="StateMachine" instance=ExtResource("3_41sqx")]
-script = ExtResource("4_kevci")
-
-[node name="WiggleFile" parent="StateMachine" instance=ExtResource("3_41sqx")]
-script = ExtResource("5_mpyve")
-
-[node name="MoveFile" parent="StateMachine" instance=ExtResource("3_41sqx")]
-script = ExtResource("6_h72j5")
-
 [node name="Browser" parent="." instance=ExtResource("7_75nwx")]
 unique_name_in_owner = true
 
@@ -36,8 +20,4 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 position = Vector2i(0, 800)
 
-[connection signal="grab_ended" from="Browser" to="." method="_on_browser_grab_ended"]
-[connection signal="grab_file" from="Browser" to="." method="_on_browser_grab_file"]
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]
-[connection signal="select_current_directory" from="Browser" to="." method="_on_browser_select_current_directory"]
-[connection signal="show_options" from="Browser" to="." method="_on_browser_show_options"]

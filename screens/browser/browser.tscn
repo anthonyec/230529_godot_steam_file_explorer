@@ -1,9 +1,14 @@
-[gd_scene load_steps=6 format=3 uid="uid://badj81wnpdasc"]
+[gd_scene load_steps=11 format=3 uid="uid://dkdw01mwgy8xb"]
 
 [ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
 [ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="2_7khgx"]
+[ext_resource type="PackedScene" uid="uid://cugjrmwt16ejf" path="res://components/state_machine/state_machine.tscn" id="2_pxnmx"]
 [ext_resource type="PackedScene" uid="uid://dbbd43p8lm1e8" path="res://components/files/files.tscn" id="2_wu4yh"]
 [ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://components/files/button_style_focus.tres" id="3_2pk85"]
+[ext_resource type="PackedScene" uid="uid://bt1l6u0dxhrsp" path="res://components/state_machine/state.tscn" id="3_ehd7w"]
+[ext_resource type="Script" path="res://screens/browser/states/default.gd" id="4_35l2k"]
+[ext_resource type="Script" path="res://screens/browser/states/wiggle_file.gd" id="5_xr0a3"]
+[ext_resource type="Script" path="res://screens/browser/states/moving_file.gd" id="6_bdxkr"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_obhnl"]
 bg_color = Color(0.886275, 0.905882, 0.933333, 1)
@@ -12,6 +17,17 @@ bg_color = Color(0.886275, 0.905882, 0.933333, 1)
 title = "Browser"
 size = Vector2i(1280, 800)
 script = ExtResource("1_pf074")
+
+[node name="StateMachine" parent="." instance=ExtResource("2_pxnmx")]
+
+[node name="Default" parent="StateMachine" instance=ExtResource("3_ehd7w")]
+script = ExtResource("4_35l2k")
+
+[node name="WiggleFile" parent="StateMachine" instance=ExtResource("3_ehd7w")]
+script = ExtResource("5_xr0a3")
+
+[node name="MoveFile" parent="StateMachine" instance=ExtResource("3_ehd7w")]
+script = ExtResource("6_bdxkr")
 
 [node name="Panel" type="Panel" parent="."]
 anchors_preset = 15
