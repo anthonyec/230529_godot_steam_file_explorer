@@ -25,16 +25,9 @@ enum InteractionMode {
 var is_changing_directory: bool = false
 var was_grabbing: bool = false
 
-#var watcher = DirectoryWatcher.new()
-
 func _ready() -> void:
 	super()
 	goto(current_path)
-	
-#	add_child(watcher)
-#	watcher.files_created.connect(_on_files_changed)
-#	watcher.connect("files_modified", _on_files_changed)
-#	watcher.connect("files_deleted", _on_files_changed)
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_released("ui_cancel", true):
@@ -127,8 +120,6 @@ func open(path: String) -> void:
 	open_file.emit(path)
 	
 func goto(path: String) -> void:
-#	var old_path = current_path
-	
 	current_path = path
 	
 	var directory_title = current_path.get_file()
@@ -140,11 +131,6 @@ func goto(path: String) -> void:
 	count_label.text = str(count) + " files"
 	files.sort_custom(sort_files_by_alphabetical)
 	file_list.set_files(path, files)
-	
-#	watcher.add_scan_directory(current_path)
-#
-#	if old_path != current_path:
-#		watcher.remove_scan_directory(old_path)
 	
 func reload() -> void:
 	goto(current_path)
