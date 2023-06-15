@@ -10,6 +10,23 @@ func enter(params: Dictionary) -> void:
 	
 	file = params.file
 	main.browser_screen.interaction_mode = main.browser_screen.InteractionMode.SELECT_DIRECTORY
+
+	if is_grabbing:
+		var item: FileItem = main.browser_screen.file_list.get_item_by_id(file.id)
+		var item_viewport_texture = item.get_viewport().get_texture()
+		
+		var item_screenshot = TextureRect.new()
+		item_screenshot.texture = item_viewport_texture
+		item_screenshot.size = item.size
+		print(item_screenshot)
+		
+		main.add_child(item_screenshot)
+#		var tween = get_tree().create_tween()
+#
+#		tween.bind_node(item)
+#		tween.tween_property(item, "rotation", deg_to_rad(1), 0.2)
+
+		pass
 	
 func exit() -> void:
 	file.queue_free()
