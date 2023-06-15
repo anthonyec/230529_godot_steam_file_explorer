@@ -1,8 +1,8 @@
 class_name MainState
 extends State
 
-var main: Main
+var main: Shell
 
 func awake() -> void:
-	main = owner as Main
+	main = owner as Shell
 	assert(main != null)

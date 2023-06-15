@@ -1,15 +1,15 @@
-[gd_scene load_steps=9 format=3 uid="uid://dbtmjrcqxqa3c"]
+[gd_scene load_steps=9 format=3 uid="uid://ceo31xufvamt"]
 
-[ext_resource type="Script" path="res://screens/main/main.gd" id="1_mxl15"]
+[ext_resource type="Script" path="res://screens/shell/shell.gd" id="1_mxl15"]
 [ext_resource type="PackedScene" uid="uid://badj81wnpdasc" path="res://screens/browser/browser.tscn" id="1_qd2qa"]
 [ext_resource type="PackedScene" uid="uid://cugjrmwt16ejf" path="res://components/state_machine/state_machine.tscn" id="2_tpehs"]
 [ext_resource type="PackedScene" uid="uid://cekdgi7n3b31t" path="res://components/status_bar/status_bar.tscn" id="3_cxoev"]
 [ext_resource type="PackedScene" uid="uid://bt1l6u0dxhrsp" path="res://components/state_machine/state.tscn" id="3_q6n2g"]
-[ext_resource type="Script" path="res://screens/main/states/default.gd" id="4_ud3lq"]
-[ext_resource type="Script" path="res://screens/main/states/wiggle_file.gd" id="5_7ocqy"]
-[ext_resource type="Script" path="res://screens/main/states/moving_file.gd" id="5_kafqh"]
+[ext_resource type="Script" path="res://screens/shell/states/default.gd" id="4_ud3lq"]
+[ext_resource type="Script" path="res://screens/shell/states/wiggle_file.gd" id="5_7ocqy"]
+[ext_resource type="Script" path="res://screens/shell/states/moving_file.gd" id="5_kafqh"]
 
-[node name="Main" type="Control"]
+[node name="Shell" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
