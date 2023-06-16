@@ -16,8 +16,10 @@ func handle_input(event: InputEvent) -> void:
 	if event.is_action_pressed("grab", true):
 		var focused_file = browser.file_list.focused_file
 		
-		if focused_file:
-			was_grabbing = true
+		if not focused_file:
+			return
+		
+		was_grabbing = true
 			
 		var file = File.new(focused_file.path, focused_file.is_directory)
 

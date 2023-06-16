@@ -16,12 +16,17 @@ func enter(params: Dictionary) -> void:
 
 	if is_grabbing:
 		var item: FileItem = browser.file_list.get_item_by_id(file.id)
-		var item_viewport_texture = item.get_viewport().get_texture()
+#		var item_viewport_texture = item.get_viewport().get_texture()
+		
+		var region = item.get_rect()
+		var image = item.get_viewport().get_texture().get_image().get_region(region)
 		
 		var item_screenshot = TextureRect.new()
-		item_screenshot.texture = item_viewport_texture
+		item_screenshot.texture = image
 		item_screenshot.size = item.size
+		
 		print(item_screenshot)
+		print(image)
 		
 		browser.add_child(item_screenshot)
 	
