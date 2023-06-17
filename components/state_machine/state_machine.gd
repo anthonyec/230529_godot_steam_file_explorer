@@ -79,6 +79,18 @@ func setup_child_states(node: Node, has_parent_state: bool = false, depth: int =
 		child.parent_state = node if has_parent_state else null 
 		child.awake()
 		
+		if child.has_method("_process"):
+			push_warning(child.name + " state has implemented `_process` which will get invoked even if the state is not active. Did you mean to use `update` instead?")
+			
+		if child.has_method("_physics_update"):
+			push_warning(child.name + " state has implemented `_physics_update` which will get invoked even if the state is not active. Did you mean to use `physics_update` instead?")
+			
+		if child.has_method("_input"):
+			push_warning(child.name + " state has implemented `_input` which will get invoked even if the state is not active. Did you mean to use `handle_input` instead?")
+			
+		if child.has_method("_ready"):
+			push_warning(child.name + " state has implemented `_ready` which will get invoked even if the state machine is disabled. Did you mean to use `awake` instead?")
+		
 		setup_child_states(child, true, depth + 1)
 
 func transition_to(state_name: String, params: Dictionary = {}) -> void:
@@ -97,11 +109,17 @@ func transition_to(state_name: String, params: Dictionary = {}) -> void:
 	
 	if current_state:
 		state_exited.emit(current_state)
-		current_state.exit()
+		
+		# TODO: Not sure if always yielding for asynchronous logic is a good 
+		# idea. Is there performance implications? And the current state `update`
+		# method will be called after `exit` if it's yielding, which seems unexpected.
+		await current_state.exit()
 	
 	if is_different_parent_state and current_parent_state:
 		state_exited.emit(current_parent_state)
-		current_parent_state.exit()
+		
+		# TODO: Not sure if I'm keeping `await`. See comment above.
+		await current_parent_state.exit()
 		
 	current_parent_state = next_state.parent_state
 	current_state = next_state

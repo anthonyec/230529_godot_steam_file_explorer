@@ -4,7 +4,6 @@ var was_grabbing: bool = false
 
 func enter(_params: Dictionary) -> void:
 	browser.directory_action_button.visible = false
-	browser.grab_hand.disappear()
 	
 func exit() -> void:
 	pass

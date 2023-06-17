@@ -19,5 +19,6 @@ func disappear() -> void:
 func appear() -> void:
 	spring.length = 1
 
-func push() -> void:
+func push(_direction: Vector2) -> void:
+	# TODO: Do something with `direction`.
 	spring.add_velocity(-5)

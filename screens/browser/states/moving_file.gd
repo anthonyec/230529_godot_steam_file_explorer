@@ -6,6 +6,9 @@ var was_grabbing: bool = true
 var item_is_grabbed: bool = false
 var item_screenshot: TextureRect
 
+func awake() -> void:
+	super()
+
 func enter(params: Dictionary) -> void:
 	assert(params.has("file"), "File param required when transitioning to this state")
 	file = params.file
@@ -41,11 +44,29 @@ func enter(params: Dictionary) -> void:
 	
 	await tween.finished
 	
-	browser.grab_hand.push()
+	var original_position: Vector2 = params.get("original_position", Vector2(0, 0)) as Vector2
+	var direction = original_position.direction_to(browser.grab_hand.end_position)
+	
+	browser.grab_hand.push(direction)
 	item_is_grabbed = true
 	
 func exit() -> void:
 	item_is_grabbed = false
+	browser.grab_hand.disappear()
+	
+	var item: FileItem = browser.file_list.get_item_by_id(file.id)
+	
+	if item:
+		var tween = get_tree().create_tween()
+		
+		tween.bind_node(item_screenshot)
+		tween.set_ease(Tween.EASE_OUT)
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.set_parallel(true)
+		tween.tween_property(item_screenshot, "position", item.global_position, 0.25)
+		tween.tween_property(item_screenshot, "scale", Vector2(1, 1), 0.25)
+		
+		await tween.finished
 	
 	browser.directory_action_button.visible = false
 	browser.directory_action_button.disconnect("pressed", perform_move)
@@ -55,9 +76,11 @@ func exit() -> void:
 	
 	item_screenshot.queue_free()
 	
-func _process(delta: float) -> void:
-	if item_is_grabbed:
-		item_screenshot.position = browser.grab_hand.position
+func update(_delta: float) -> void:
+	if not item_is_grabbed:
+		return
+		
+	item_screenshot.position = browser.grab_hand.position
 	
 func handle_input(event: InputEvent) -> void:
 	if not is_grabbing:
@@ -81,8 +104,19 @@ func perform_move() -> void:
 	
 	# TODO: Add error handling here with returned value.
 	FS.move(file.path, browser.current_path)
-
 	browser.reload()
+	
+	browser.file_list.get_item_by_id(file.id)
+	
 	# TODO: Replace with path joining fuinction.
-	browser.file_list.focus_file_by_id(File.get_id_from_path(browser.current_path + "/" + file.file_name))
+	var new_file_id = File.get_id_from_path(browser.current_path + "/" + file.file_name)
+	
+	browser.file_list.focus_file_by_id(new_file_id)
+	
+	var new_item = browser.file_list.get_item_by_id(new_file_id)
+	file = File.new(new_item.file.path, new_item.file.is_directory)
+	
+	# TODO: Wait for file appear animation to happen instead of timer.
+	await get_tree().create_timer(0.2).timeout
+	
 	state_machine.transition_to("Default")

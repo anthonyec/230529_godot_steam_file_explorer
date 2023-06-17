@@ -26,6 +26,9 @@ func enter(params: Dictionary) -> void:
 	
 	browser.grab_hand.appear()
 	
+func exit() -> void:
+	browser.grab_hand.disappear()
+	
 func handle_input(event: InputEvent) -> void:
 	if event.is_action_released("grab", true) and was_grabbing:
 		was_grabbing = false
@@ -71,8 +74,6 @@ func create_perlin_noise() -> FastNoiseLite:
 	return perlin_noise
 	
 func grab_released() -> void:
-	print("grab released")
-	
 	var item: FileItem = browser.file_list.get_item_by_id(file.id)
 	item.position = original_position
 	
