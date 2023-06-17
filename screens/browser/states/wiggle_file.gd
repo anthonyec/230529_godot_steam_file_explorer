@@ -12,6 +12,8 @@ func enter(params: Dictionary) -> void:
 	var item: FileItem = browser.file_list.get_item_by_id(file.id)
 	original_position = item.position
 	
+	browser.grab_hand.appear()
+	
 func handle_input(event: InputEvent) -> void:
 	if event.is_action_released("grab", true) and was_grabbing:
 		was_grabbing = false
@@ -21,7 +23,7 @@ func handle_input(event: InputEvent) -> void:
 		
 	if event.is_action_pressed("grab", true):
 		was_grabbing = true
-		strength = event.get_action_strength("grab", true)	
+		strength = event.get_action_strength("grab", true)
 
 func update(delta: float) -> void:
 	if not file:
@@ -39,7 +41,8 @@ func update(delta: float) -> void:
 	if strength > 0.8 and state_machine.time_in_current_state > 100:
 		state_machine.transition_to("MoveFile", {
 			"file": file,
-			"grabbing": true
+			"grabbing": true,
+			"original_position": original_position
 		})
 
 func grab_released() -> void:

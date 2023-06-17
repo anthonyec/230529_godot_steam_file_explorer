@@ -21,6 +21,7 @@ enum InteractionMode {
 @onready var count_label: Label = %Count
 @onready var directory_action_button: Button = %DirectoryActionButton
 @onready var state_machine: StateMachine = $StateMachine as StateMachine
+@onready var grab_hand: GrabHand = $GrabHand as GrabHand
 
 var is_changing_directory: bool = false
 var was_grabbing: bool = false
