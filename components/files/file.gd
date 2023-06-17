@@ -24,13 +24,19 @@ func _ready() -> void:
 		icon_texture.texture = file_icon_texture
 		
 	label.text = file.file_name
-#
+	
+	connect("resized", _on_resized)
+	_on_resized()
+
 #	if file.extension == "png" or file.extension == "jpg" or file.extension == "jpeg":
 #		Thumbnails.get_thumbnail(file.path, func(image): 
 #			var thumbnail_texture = ImageTexture.create_from_image(image)
 #			icon_texture.texture = thumbnail_texture
 #		)
-		
+
+func _on_resized() -> void:
+	pivot_offset = size / 2
+
 func _exit_tree() -> void:
 	file.queue_free() # @PREVENT_MEMORY_LEAK
 	queue_free() # @PREVENT_MEMORY_LEAK

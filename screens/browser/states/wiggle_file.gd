@@ -9,7 +9,12 @@ var noise: Array[FastNoiseLite]
 
 func awake() -> void:
 	super()
+	
+	# Random noise for `x`.
 	noise.append(create_perlin_noise())
+	# Random noise for `y`.
+	noise.append(create_perlin_noise())
+	# Random noise for `rotation`.
 	noise.append(create_perlin_noise())
 
 func enter(params: Dictionary) -> void:
@@ -48,6 +53,7 @@ func update(delta: float) -> void:
 	) * strength * 10
 	
 	item.position = original_position + offset
+	item.rotation_degrees = noise[2].get_noise_1d(Time.get_ticks_msec()) * strength
 
 	if strength > 0.8 and state_machine.time_in_current_state > 100:
 		state_machine.transition_to("MoveFile", {
