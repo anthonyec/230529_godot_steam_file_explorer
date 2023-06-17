@@ -22,13 +22,19 @@ enum InteractionMode {
 @onready var directory_action_button: Button = %DirectoryActionButton
 @onready var state_machine: StateMachine = $StateMachine as StateMachine
 @onready var grab_hand: GrabHand = $GrabHand as GrabHand
-
+@onready var sidebar: Sidebar = $Sidebar as Sidebar
+@onready var panel: Panel = $Panel
+ 
 var is_changing_directory: bool = false
 var was_grabbing: bool = false
 
 func _ready() -> void:
 	super()
+	
 	goto(current_path)
+	
+	panel.connect("resized", _on_panel_resize)
+	_on_panel_resize()
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_released("ui_cancel", true):
@@ -43,6 +49,13 @@ func _input(event: InputEvent) -> void:
 		if focused_file:
 			focused_file.is_selected = !focused_file.is_selected
 			SFX.play_everywhere("select")
+			
+	if event.is_action_pressed("menu", true):
+		sidebar.open()
+		
+func _on_panel_resize() -> void:
+	panel.pivot_offset = panel.size / 2
+	sidebar.size.y = get_viewport().size.y
 		
 func get_controls() -> Dictionary:
 	return {

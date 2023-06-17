@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dkdw01mwgy8xb"]
+[gd_scene load_steps=16 format=3 uid="uid://dkdw01mwgy8xb"]
 
 [ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
 [ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="2_7khgx"]
@@ -12,8 +12,12 @@
 [ext_resource type="Script" path="res://screens/browser/states/moving_file.gd" id="6_bdxkr"]
 [ext_resource type="Script" path="res://screens/browser/grab_hand.gd" id="11_0kk5l"]
 [ext_resource type="Script" path="res://screens/browser/spring.gd" id="12_ivume"]
+[ext_resource type="Script" path="res://screens/browser/sidebar.gd" id="13_h71f0"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_obhnl"]
+bg_color = Color(0.886275, 0.905882, 0.933333, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vv4tw"]
 bg_color = Color(0.886275, 0.905882, 0.933333, 1)
 
 [node name="Browser" type="Window"]
@@ -48,6 +52,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
 
 [node name="TitleBar" type="MarginContainer" parent="Panel/VBoxContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 60)
@@ -135,6 +140,34 @@ theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = ExtResource("2_7khgx")
 theme_override_styles/focus = ExtResource("3_2pk85")
 text = "Directory action label"
+
+[node name="Sidebar" type="Window" parent="."]
+size = Vector2i(400, 100)
+transient = true
+exclusive = true
+borderless = true
+always_on_top = true
+script = ExtResource("13_h71f0")
+
+[node name="Panel" type="Panel" parent="Sidebar"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_vv4tw")
+
+[node name="Menu" type="ItemList" parent="Sidebar/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+item_count = 3
+item_0/text = "Dekstop"
+item_1/text = "Downloads"
+item_2/text = "Settings"
 
 [connection signal="pressed" from="Panel/VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
 [connection signal="item_focused" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_focused"]
