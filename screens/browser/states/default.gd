@@ -21,7 +21,7 @@ func handle_input(event: InputEvent) -> void:
 		
 		was_grabbing = true
 			
-		var file = File.new(focused_file.path, focused_file.is_directory)
+		var file = File.new_from(focused_file)
 
 		state_machine.transition_to("WiggleFile", {
 			"file": file

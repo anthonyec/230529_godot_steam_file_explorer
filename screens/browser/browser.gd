@@ -77,7 +77,7 @@ func show_file_options() -> void:
 	
 	# A new `File` is created because the original file will be freed when 
 	# the list changes and items are removed.
-	var file = File.new(focused_file.path, focused_file.is_directory)
+	var file = File.new_from(focused_file)
 	
 	ContextMenu.show("Options for " + file.file_name, [
 		{ "label": "Reload", "callback": reload }, # TODO: Move this somewhere else, it's not file specfic!

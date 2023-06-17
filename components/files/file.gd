@@ -5,6 +5,7 @@ extends Button
 
 @onready var icon_texture: TextureRect = %Icon as TextureRect
 @onready var label: Label = %Label as Label
+@onready var rendered: bool = true
 
 const folder_icon_texture: Texture2D = preload("res://components/files/folder_black_36dp.svg")
 const file_icon_texture: Texture2D = preload("res://components/files/insert_drive_file_black_36dp.svg")
@@ -14,6 +15,8 @@ func _ready() -> void:
 	
 	var other_colors: float = 0.0 if file.is_selected else 1.0
 	var opacity: float = 0.2 if file.is_disabled else 1.0
+	
+	print(file.file_name, " ", file.is_disabled, opacity)
 	
 	modulate = Color(other_colors, other_colors, other_colors, opacity)
 	disabled = file.is_disabled
@@ -45,6 +48,7 @@ func _on_file_changed(property_name: String, _previous_value: Variant, _next_val
 	if property_name == "is_selected":
 		var other_colors: float = 0.0 if file.is_selected else 1.0
 		var tween = get_tree().create_tween()
+		
 		tween.tween_property(self, "modulate", Color(other_colors, other_colors, other_colors, 1), 0.1)
 		tween.tween_property(self, "scale", Vector2(0.95, 0.95), 0.05)
 		tween.tween_property(self, "scale", Vector2(1, 1), 0.1)
@@ -52,5 +56,7 @@ func _on_file_changed(property_name: String, _previous_value: Variant, _next_val
 	if property_name == "is_disabled":
 		var opacity: float = 0.2 if file.is_disabled == true else 1.0
 		var tween = get_tree().create_tween()
-		tween.tween_property(self, "modulate", Color(1, 1, 1, opacity), 0.5)
-	
+		
+		tween.set_ease(Tween.EASE_IN_OUT)
+		tween.set_trans(Tween.TRANS_CUBIC)
+		tween.tween_property(self, "modulate", Color(1, 1, 1, opacity), 0.2)

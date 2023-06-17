@@ -33,6 +33,8 @@ func enter(params: Dictionary) -> void:
 	
 	browser.add_child(item_screenshot)
 	
+	item.file.is_disabled = true
+	
 	var tween = get_tree().create_tween()
 	
 	tween.bind_node(item_screenshot)
@@ -56,7 +58,11 @@ func exit() -> void:
 	
 	var item: FileItem = browser.file_list.get_item_by_id(file.id)
 	
+	print(file)
+	
 	if item:
+		item.file.is_disabled = true
+		
 		var tween = get_tree().create_tween()
 		
 		tween.bind_node(item_screenshot)
@@ -67,6 +73,8 @@ func exit() -> void:
 		tween.tween_property(item_screenshot, "scale", Vector2(1, 1), 0.25)
 		
 		await tween.finished
+		
+		item.file.is_disabled = false
 	
 	browser.directory_action_button.visible = false
 	browser.directory_action_button.disconnect("pressed", perform_move)
@@ -114,7 +122,7 @@ func perform_move() -> void:
 	browser.file_list.focus_file_by_id(new_file_id)
 	
 	var new_item = browser.file_list.get_item_by_id(new_file_id)
-	file = File.new(new_item.file.path, new_item.file.is_directory)
+	file = File.new_from(new_item.file)
 	
 	# TODO: Wait for file appear animation to happen instead of timer.
 	await get_tree().create_timer(0.2).timeout
