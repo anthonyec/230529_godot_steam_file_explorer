@@ -5,6 +5,13 @@ var strength: float = 0
 var original_position: Vector2
 var was_grabbing: bool = false
 
+var noise: Array[FastNoiseLite]
+
+func awake() -> void:
+	super()
+	noise.append(create_perlin_noise())
+	noise.append(create_perlin_noise())
+
 func enter(params: Dictionary) -> void:
 	assert(params.has("file"), "File param required")
 	file = params.file
@@ -35,8 +42,12 @@ func update(delta: float) -> void:
 		state_machine.transition_to("Default")
 		return
 	
-	item.position = original_position + Vector2(randf_range(-1, 1), randf_range(-1, 1)) * strength * 5
-#	item.rotation_degrees = randf_range(-1, 1)
+	var offset = Vector2(
+		noise[0].get_noise_1d(Time.get_ticks_msec()), 
+		noise[1].get_noise_1d(Time.get_ticks_msec())
+	) * strength * 10
+	
+	item.position = original_position + offset
 
 	if strength > 0.8 and state_machine.time_in_current_state > 100:
 		state_machine.transition_to("MoveFile", {
@@ -45,6 +56,14 @@ func update(delta: float) -> void:
 			"original_position": original_position
 		})
 
+func create_perlin_noise() -> FastNoiseLite:
+	var perlin_noise = FastNoiseLite.new()
+	
+	perlin_noise.seed = randi()
+	perlin_noise.noise_type = FastNoiseLite.TYPE_PERLIN
+
+	return perlin_noise
+	
 func grab_released() -> void:
 	print("grab released")
 	
