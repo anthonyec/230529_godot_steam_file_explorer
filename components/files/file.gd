@@ -16,8 +16,6 @@ func _ready() -> void:
 	var other_colors: float = 0.0 if file.is_selected else 1.0
 	var opacity: float = 0.2 if file.is_disabled else 1.0
 	
-	print(file.file_name, " ", file.is_disabled, opacity)
-	
 	modulate = Color(other_colors, other_colors, other_colors, opacity)
 	disabled = file.is_disabled
 #

@@ -14,7 +14,8 @@ func _process(_delta: float) -> void:
 		close.emit()
 
 func _on_option_list_item_clicked(index: int, at_position: Vector2, mouse_button_index: int) -> void:
-	print("_on_option_list_item_clicked", index)
-	
-	if index == 0:
-		print("CLOSE_AND_OPEN", target_path)
+	pass
+#	print("_on_option_list_item_clicked", index)
+#
+#	if index == 0:
+#		print("CLOSE_AND_OPEN", target_path)

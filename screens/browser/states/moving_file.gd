@@ -58,8 +58,6 @@ func exit() -> void:
 	
 	var item: FileItem = browser.file_list.get_item_by_id(file.id)
 	
-	print(file)
-	
 	if item:
 		item.file.is_disabled = true
 		
