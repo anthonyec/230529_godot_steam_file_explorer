@@ -2,7 +2,7 @@ class_name Sidebar
 extends Window
 
 @onready var panel: Panel = %Panel
-@onready var menu: ItemList = %Menu
+@onready var menu: ListMenu = %ListMenu as ListMenu 
 
 @export var is_open: bool = false
 
@@ -15,15 +15,21 @@ func _ready() -> void:
 	else:
 		position = Vector2(-size.x, 0)
 		
-	menu.connect("item_clicked", _on_item_clicked)
+	menu.items = [
+		{ "label": "Desktop" },
+		{ "label": "Downloads" },
+		{ "label": "Test Folder" },
+	];
+		
+	menu.connect("item_clicked", _on_menu_list_item_clicked)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu", true):
 		close()
 		
 	if event.is_action_released("ui_accept", true):
-		var selected = menu.get_selected_items()
-		_on_item_clicked(selected[0], Vector2(0, 0), 0)
+		var index = menu.get_focused_index()
+		_on_menu_list_item_clicked(index)
 		
 	if event.is_action_released("options", true):
 		ContextMenu.show("Shortcut options", [
@@ -41,7 +47,7 @@ func _input(event: InputEvent) -> void:
 			}
 		], self)
 
-func _on_item_clicked(index: int, _at_positon: Vector2, _mouse_button: int) -> void:
+func _on_menu_list_item_clicked(index: int) -> void:
 	match index:
 		0:
 			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP))
@@ -60,8 +66,7 @@ func open() -> void:
 	
 	visible = true
 	
-	menu.select(0)
-	menu.grab_focus()
+	menu.focus(0)
 	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)
@@ -78,10 +83,6 @@ func close() -> void:
 	var panel_tween = get_tree().create_tween()
 	
 	SFX.play_everywhere("close_menu")
-	
-	# Important to release focus otherwise when re-opening the menu, arrow keys
-	# do not change item selection until you press them 15+ times (don't know why).
-	menu.release_focus()
 	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)

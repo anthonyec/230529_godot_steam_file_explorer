@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dkdw01mwgy8xb"]
+[gd_scene load_steps=16 format=3 uid="uid://dkdw01mwgy8xb"]
 
 [ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
 [ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="2_7khgx"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://screens/browser/grab_hand.gd" id="11_0kk5l"]
 [ext_resource type="Script" path="res://screens/browser/spring.gd" id="12_ivume"]
 [ext_resource type="Script" path="res://screens/browser/sidebar.gd" id="13_h71f0"]
+[ext_resource type="PackedScene" uid="uid://c4chj05d25jrr" path="res://components/list_menu/list_menu.tscn" id="14_f1yp4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_obhnl"]
 bg_color = Color(0.886275, 0.905882, 0.933333, 1)
@@ -160,17 +161,9 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Shortcuts"
 
-[node name="Menu" type="ItemList" parent="Sidebar/VBoxContainer"]
+[node name="ListMenu" parent="Sidebar/VBoxContainer" instance=ExtResource("14_f1yp4")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/v_separation = 10
-theme_override_font_sizes/font_size = 20
-theme_override_styles/selected_focus = ExtResource("3_2pk85")
-item_count = 3
-item_0/text = "Dekstop"
-item_1/text = "Downloads"
-item_2/text = "Test Folder"
 
 [connection signal="pressed" from="Panel/VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
 [connection signal="item_focused" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_focused"]

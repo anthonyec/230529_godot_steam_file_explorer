@@ -7,9 +7,6 @@ extends Control
 var current_screen: Window = null
 
 func _ready() -> void:
-	# TODO: Replace with something else to work with sidebar.
-#	ContextMenu.connect("menu_closed", _on_context_menu_closed)
-	
 	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
 	_on_screen_focus_entered(browser_screen)
 	
@@ -86,9 +83,3 @@ func _on_browser_open_file(path: String) -> void:
 		
 		_:
 			SFX.play_everywhere("invalid")
-	
-func _on_context_menu_closed() -> void:
-	browser_screen.grab_focus()
-
-	if current_screen:
-		current_screen.grab_focus()
