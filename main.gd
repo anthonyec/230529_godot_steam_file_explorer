@@ -7,7 +7,8 @@ extends Control
 var current_screen: Window = null
 
 func _ready() -> void:
-	ContextMenu.connect("menu_closed", _on_context_menu_closed)
+	# TODO: Replace with something else to work with sidebar.
+#	ContextMenu.connect("menu_closed", _on_context_menu_closed)
 	
 	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
 	_on_screen_focus_entered(browser_screen)

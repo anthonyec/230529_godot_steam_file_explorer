@@ -24,6 +24,25 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("ui_accept", true):
 		var selected = menu.get_selected_items()
 		_on_item_clicked(selected[0], Vector2(0, 0), 0)
+		
+	if event.is_action_released("options", true):
+		ContextMenu.show("Shortcut options", [
+			{
+				"label": "Remove"
+			},
+			{
+				"label": "---"
+			},
+			{
+				"label": "Move up"
+			},
+			{
+				"label": "Move down"
+			}
+		])
+		pass
+#		var selected = menu.get_selected_items()
+#		_on_item_clicked(selected[0], Vector2(0, 0), 0)
 
 func _on_item_clicked(index: int, _at_positon: Vector2, _mouse_button: int) -> void:
 	match index:
