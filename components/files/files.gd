@@ -22,7 +22,7 @@ var id_to_item_map: Dictionary = {}
 func _ready() -> void:
 	get_viewport().connect("gui_focus_changed", _on_gui_focus_changed)
 	
-func _on_gui_focus_changed(control: Control) -> void:
+func _on_gui_focus_changed(control: Control) -> void:	
 	if control.get_parent() == list:
 		control = control as FileItem
 		focused_file = control.file

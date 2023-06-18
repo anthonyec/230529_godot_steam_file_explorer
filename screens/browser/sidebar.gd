@@ -1,7 +1,8 @@
 class_name Sidebar
 extends Window
 
-@onready var panel: Panel = $"../Panel"
+@onready var panel: Panel = %Panel
+@onready var menu: ItemList = %Menu
 
 @export var is_open: bool = false
 
@@ -13,7 +14,7 @@ func _ready() -> void:
 		position = Vector2(0, 0)
 	else:
 		position = Vector2(-size.x, 0)
-		
+
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu", true):
 		close()
@@ -26,6 +27,9 @@ func open() -> void:
 	
 	visible = true
 	
+	menu.select(0)
+	menu.grab_focus()
+	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)
 	open_tween.tween_property(self, "position:x", 0, 0.25)
@@ -36,11 +40,16 @@ func open() -> void:
 	panel_tween.tween_property(panel, "scale", Vector2(0.9, 0.9), 0.25)
 	panel_tween.tween_property(panel, "modulate", Color(0.8, 0.8, 0.8, 1), 0.25)
 	
+	
 func close() -> void:
 	var open_tween = get_tree().create_tween()
 	var panel_tween = get_tree().create_tween()
 	
 	SFX.play_everywhere("close_menu")
+	
+	# Important to release focus otherwise when re-opening the menu, arrow keys
+	# do not change item selection until you press them 15+ times (don't know why).
+	menu.release_focus()
 	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)
