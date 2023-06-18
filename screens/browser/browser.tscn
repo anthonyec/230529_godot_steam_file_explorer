@@ -140,7 +140,6 @@ theme_override_styles/focus = ExtResource("3_2pk85")
 text = "Directory action label"
 
 [node name="Sidebar" type="Window" parent="."]
-position = Vector2i(-400, 0)
 size = Vector2i(400, 800)
 transient = true
 exclusive = true

@@ -39,10 +39,7 @@ func _input(event: InputEvent) -> void:
 			{
 				"label": "Move down"
 			}
-		])
-		pass
-#		var selected = menu.get_selected_items()
-#		_on_item_clicked(selected[0], Vector2(0, 0), 0)
+		], self)
 
 func _on_item_clicked(index: int, _at_positon: Vector2, _mouse_button: int) -> void:
 	match index:

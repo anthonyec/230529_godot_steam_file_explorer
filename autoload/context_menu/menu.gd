@@ -10,11 +10,10 @@ signal close
 
 var target_path: String
 var is_closing: bool = false
-var previously_focused_control: Control
 
 func _ready() -> void:
 	connect("focus_exited", _on_focus_exited)
-	
+
 	title_label.text = title
 	
 	for option in options:

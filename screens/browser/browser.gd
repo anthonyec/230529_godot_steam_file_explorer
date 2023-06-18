@@ -99,7 +99,7 @@ func show_file_options() -> void:
 		{ "label": "Rename", "callback": rename_file.bind(file) },
 		{ "label": "---" },
 		{ "label": "Trash", "callback": trash_file.bind(file) },
-	])
+	], self)
 	
 func move_file(file: File) -> void:
 	state_machine.send_message("move_file", {
