@@ -87,6 +87,9 @@ func focus(index: int) -> void:
 	
 	if item:
 		item.grab_focus()
+		
+func focus_last() -> void:
+	focus(get_child_count() - 1)
 
 func _on_item_clicked(item: Button) -> void:
 	item_clicked.emit(item.get_index())

@@ -27,15 +27,11 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu", true):
 		close()
 		
-	if event.is_action_released("ui_accept", true):
-		var index = menu.get_focused_index()
-		_on_menu_list_item_clicked(index)
-		
 	if event.is_action_released("options", true):
 		ContextMenu.show("Shortcut options", [
 			{
 				"label": "Remove",
-				"callback": remove_focused_shortcut
+				"callback": _on_context_menu_remove
 			},
 			{
 				"label": "---"
@@ -48,12 +44,11 @@ func _input(event: InputEvent) -> void:
 			}
 		], self)
 
-func remove_focused_shortcut() -> void:
+func _on_context_menu_remove() -> void:
 	var index = menu.get_focused_index()
 	menu.remove_item(index)
 	
 func _on_menu_list_updated() -> void:
-	print("_on_menu_list_updated")
 	save_shortcuts()
 	
 func _on_menu_list_emptied() -> void:
@@ -74,6 +69,7 @@ func _on_menu_list_item_clicked(index: int) -> void:
 	
 func _on_add_shortcut_button_clicked() -> void:
 	menu.add_item(get_parent().current_path)
+	menu.focus_last()
 	
 func load_shortcuts() -> void:
 	var file = FileAccess.open("user://shortcuts.json", FileAccess.READ)
