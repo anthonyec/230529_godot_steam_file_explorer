@@ -37,10 +37,12 @@ func _input(event: InputEvent) -> void:
 				"label": "---"
 			},
 			{
-				"label": "Move up"
+				"label": "Move up",
+				"callback": _on_context_menu_move_up
 			},
 			{
-				"label": "Move down"
+				"label": "Move down",
+				"callback": _on_context_menu_move_down
 			}
 		], self)
 
@@ -55,17 +57,19 @@ func _on_menu_list_emptied() -> void:
 	add_shortcut_button.grab_focus()
 	
 func _on_menu_list_item_clicked(index: int) -> void:
-	match index:
-		0:
-			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DESKTOP))
-		1:
-			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
-		2:
-			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder")
-		_:
-			print("ADD")
-
+	var item = menu.items[index]
+	var path = item.get("label", null)
+	
+	get_parent().goto(path)
 	close()
+	
+func _on_context_menu_move_up() -> void:
+	var index = menu.get_focused_index()
+	menu.move_item(index, index - 1)
+	
+func _on_context_menu_move_down() -> void:
+	var index = menu.get_focused_index()
+	menu.move_item(index, index + 1)
 	
 func _on_add_shortcut_button_clicked() -> void:
 	menu.add_item(get_parent().current_path)
