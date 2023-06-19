@@ -165,6 +165,11 @@ text = "Shortcuts"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="AddShortcutButton" type="Button" parent="Sidebar/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add shortcut"
+
 [connection signal="pressed" from="Panel/VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
 [connection signal="item_focused" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_focused"]
 [connection signal="item_selected" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_selected"]

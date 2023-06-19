@@ -2,7 +2,8 @@ class_name Sidebar
 extends Window
 
 @onready var panel: Panel = %Panel
-@onready var menu: ListMenu = %ListMenu as ListMenu 
+@onready var menu: ListMenu = %ListMenu as ListMenu
+@onready var add_shortcut_button: Button = %AddShortcutButton
 
 @export var is_open: bool = false
 
@@ -14,14 +15,13 @@ func _ready() -> void:
 		position = Vector2(0, 0)
 	else:
 		position = Vector2(-size.x, 0)
-		
-	menu.items = [
-		{ "label": "Desktop" },
-		{ "label": "Downloads" },
-		{ "label": "Test Folder" },
-	];
-		
+	
+	load_shortcuts()
+	
+	menu.connect("updated", _on_menu_list_updated)
+	menu.connect("emptied", _on_menu_list_emptied)
 	menu.connect("item_clicked", _on_menu_list_item_clicked)
+	add_shortcut_button.connect("pressed", _on_add_shortcut_button_clicked)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("menu", true):
@@ -34,7 +34,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("options", true):
 		ContextMenu.show("Shortcut options", [
 			{
-				"label": "Remove"
+				"label": "Remove",
+				"callback": remove_focused_shortcut
 			},
 			{
 				"label": "---"
@@ -47,6 +48,17 @@ func _input(event: InputEvent) -> void:
 			}
 		], self)
 
+func remove_focused_shortcut() -> void:
+	var index = menu.get_focused_index()
+	menu.remove_item(index)
+	
+func _on_menu_list_updated() -> void:
+	print("_on_menu_list_updated")
+	save_shortcuts()
+	
+func _on_menu_list_emptied() -> void:
+	add_shortcut_button.grab_focus()
+	
 func _on_menu_list_item_clicked(index: int) -> void:
 	match index:
 		0:
@@ -55,8 +67,47 @@ func _on_menu_list_item_clicked(index: int) -> void:
 			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS))
 		2:
 			get_parent().goto(OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS) + "/test_folder")
+		_:
+			print("ADD")
 
 	close()
+	
+func _on_add_shortcut_button_clicked() -> void:
+	menu.add_item(get_parent().current_path)
+	
+func load_shortcuts() -> void:
+	var file = FileAccess.open("user://shortcuts.json", FileAccess.READ)
+	
+	if not file:
+		menu.items = []
+		return
+	
+	var text = file.get_as_text()
+	var json = JSON.parse_string(text)
+	
+	if json == null or typeof(json) != TYPE_ARRAY:
+		# TODO: Delete file here, it's probably cursed.
+		push_warning("Failed to load shortcuts")
+		file.close()
+		return
+	
+	var loaded_shortcuts: Array[Dictionary] = []
+	
+	# Annoyigly this has to be done otherwise I can't use types for `menu.items`.
+	# There is always a type mismatch.
+	# TODO: Maybe there is a better way to load JSON data and have it typed?
+	for json_item in json:
+		loaded_shortcuts.append(json_item)
+		
+	menu.set_items(loaded_shortcuts)
+	file.close()
+	
+func save_shortcuts() -> void:
+	var file = FileAccess.open("user://shortcuts.json", FileAccess.WRITE)
+	var json = JSON.stringify(menu.items)
+	
+	file.store_string(json)
+	file.close()
 
 func open() -> void:
 	var open_tween = get_tree().create_tween()
@@ -66,7 +117,10 @@ func open() -> void:
 	
 	visible = true
 	
-	menu.focus(0)
+	if menu.items.is_empty():
+		add_shortcut_button.grab_focus()
+	else:
+		menu.focus(0)
 	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)

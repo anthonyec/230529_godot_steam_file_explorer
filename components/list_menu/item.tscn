@@ -1,5 +1,12 @@
-[gd_scene format=3 uid="uid://c3kspycbbhyub"]
+[gd_scene load_steps=3 format=3 uid="uid://c3kspycbbhyub"]
+
+[ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="1_wi8ec"]
+[ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://components/files/button_style_focus.tres" id="2_4ecvp"]
 
 [node name="Item" type="Button"]
+custom_minimum_size = Vector2(2.08165e-12, 50)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = ExtResource("1_wi8ec")
+theme_override_styles/focus = ExtResource("2_4ecvp")
 text = "Item label"
 alignment = 0
