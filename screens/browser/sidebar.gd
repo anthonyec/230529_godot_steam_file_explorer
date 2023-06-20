@@ -7,9 +7,12 @@ extends Window
 
 @export var is_open: bool = false
 
+var browser: Browser
+
 func _ready() -> void:
 	size.y = get_parent().size.y
 	visible = is_open
+	browser = get_parent()
 	
 	if is_open:
 		position = Vector2(0, 0)
@@ -24,7 +27,7 @@ func _ready() -> void:
 	add_shortcut_button.connect("pressed", _on_add_shortcut_button_clicked)
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("menu", true):
+	if event.is_action_pressed("menu", true) or event.is_action_pressed("ui_cancel", true):
 		close()
 		
 	if event.is_action_released("options", true):
@@ -79,7 +82,7 @@ func load_shortcuts() -> void:
 	var file = FileAccess.open("user://shortcuts.json", FileAccess.READ)
 	
 	if not file:
-		menu.items = []
+		menu.set_items([])
 		return
 	
 	var text = file.get_as_text()
@@ -120,7 +123,20 @@ func open() -> void:
 	if menu.items.is_empty():
 		add_shortcut_button.grab_focus()
 	else:
-		menu.focus(0)
+		# TODO: Clean this up by using a helper function that
+		# finds the closest match.
+		var has_focused: bool = false
+		
+		for index in menu.items.size():
+			var item = menu.items[index]
+			var label = item.get("label", "") as String
+			
+			if browser.current_path.begins_with(label):
+				menu.focus(index)
+				has_focused = true
+		
+		if not has_focused:
+			menu.focus(0)
 	
 	open_tween.set_ease(Tween.EASE_IN_OUT)
 	open_tween.set_trans(Tween.TRANS_CUBIC)

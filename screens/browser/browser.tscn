@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dkdw01mwgy8xb"]
+[gd_scene load_steps=17 format=3 uid="uid://dkdw01mwgy8xb"]
 
 [ext_resource type="Script" path="res://screens/browser/browser.gd" id="1_pf074"]
 [ext_resource type="StyleBox" uid="uid://pxo5ym1t54k3" path="res://components/files/button_style_normal.tres" id="2_7khgx"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://screens/browser/spring.gd" id="12_ivume"]
 [ext_resource type="Script" path="res://screens/browser/sidebar.gd" id="13_h71f0"]
 [ext_resource type="PackedScene" uid="uid://c4chj05d25jrr" path="res://components/list_menu/list_menu.tscn" id="14_f1yp4"]
+[ext_resource type="PackedScene" uid="uid://dpipess7ylbt" path="res://components/button/button.tscn" id="15_0t17p"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_obhnl"]
 bg_color = Color(0.886275, 0.905882, 0.933333, 1)
@@ -165,10 +166,9 @@ text = "Shortcuts"
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="AddShortcutButton" type="Button" parent="Sidebar/VBoxContainer"]
+[node name="AddShortcutButton" parent="Sidebar/VBoxContainer" instance=ExtResource("15_0t17p")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Add shortcut"
 
 [connection signal="pressed" from="Panel/VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
 [connection signal="item_focused" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_focused"]

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpipess7ylbt"]
+
+[ext_resource type="StyleBox" uid="uid://ghmk8h4lsd4n" path="res://components/files/button_style_focus.tres" id="1_3uopm"]
+
+[node name="Button" type="Button"]
+theme_override_font_sizes/font_size = 20
+theme_override_styles/focus = ExtResource("1_3uopm")
+text = "Button Label"
+text_overrun_behavior = 3

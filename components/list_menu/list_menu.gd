@@ -8,7 +8,7 @@ signal item_clicked(index: int)
 signal updated
 signal emptied
 
-@export var items: Array[Dictionary]: set = set_items
+@export var items: Array[Dictionary] = []
 
 var item_resource: PackedScene = preload("res://components/list_menu/item.tscn")
 
@@ -39,16 +39,12 @@ func add_item(label: String, index: int = -1, silent: bool = false) -> Button:
 	item.connect("focus_entered", _on_item_focused.bind(item))
 	item.connect("pressed", _on_item_clicked.bind(item))
 	
+	# TODO: Animate in.
 	add_child(item)
 	items.append({ "label": label })
 	
 	if index != -1:
 		move_child(item, index)
-	
-	if get_child_count() != 0:
-		pass
-		# TODO: Animate in.
-#		item.custom_minimum_size.y = 0
 	
 	if not silent:
 		updated.emit()
@@ -64,26 +60,39 @@ func remove_item(index: int) -> void:
 	items.remove_at(index)
 	
 	if item_was_focused:
-		focus(clamp(index - 1, 0, get_child_count() - 1))
+		focus(index - 1)
 		
 	updated.emit()
 	
 	if get_child_count() == 0:
 		emptied.emit()
 	
-func move_item(from_index: int, to_index: int) -> void:
-	var item = get_item(from_index)
+func move_item(index: int, to_index: int) -> void:
+	var clamped_to_index = clamp(to_index, 0, get_child_count() - 1)
+	var item = get_item(index)
+	var item_was_focused = focused_index == index
+	
 	# TODO: Animate move.
-	move_child(item, to_index)
-	items.insert(to_index, items[from_index].duplicate(true))
-	items.remove_at(from_index)
+	move_child(item, clamped_to_index)
+	
+	var item_data = items[index].duplicate()
+	
+	# Move the data into the correct place.
+	items.remove_at(index)
+	items.insert(clamped_to_index, item_data)
+	
+	if item_was_focused:
+		# Update focus without triggering a `focus_entered` event.
+		focused_index = item.get_index()
+	
 	updated.emit()
 	
 func get_focused_index() -> int:
 	return focused_index
 
 func focus(index: int) -> void:
-	var item = get_item(index)
+	var clamped_index = clamp(index, 0, get_child_count() - 1)
+	var item = get_item(clamped_index)
 	
 	if item:
 		item.grab_focus()
