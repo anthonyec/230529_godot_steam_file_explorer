@@ -20,7 +20,9 @@ func set_items(new_items: Array[Dictionary]) -> void:
 
 	for index in new_items.size():
 		var label = new_items[index].get("label", "")
-		add_item(label, -1, true)
+		var data = new_items[index].get("data", null)
+		
+		add_item(label, data, -1, true)
 		
 	items = new_items
 	updated.emit()
@@ -31,7 +33,7 @@ func get_item(index: int) -> Button:
 
 	return get_child(index) as Button
 	
-func add_item(label: String, index: int = -1, silent: bool = false) -> Button:
+func add_item(label: String, data: Variant, index: int = -1, silent: bool = false) -> Button:
 	var item: Button = item_resource.instantiate() as Button
 	var inserted_index: int = get_child_count()
 	
@@ -41,7 +43,7 @@ func add_item(label: String, index: int = -1, silent: bool = false) -> Button:
 	
 	# TODO: Animate in.
 	add_child(item)
-	items.append({ "label": label })
+	items.append({ "label": label, "data": data })
 	
 	if index != -1:
 		move_child(item, index)

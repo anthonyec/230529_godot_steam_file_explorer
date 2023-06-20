@@ -61,9 +61,11 @@ func _on_menu_list_emptied() -> void:
 	
 func _on_menu_list_item_clicked(index: int) -> void:
 	var item = menu.items[index]
-	var path = item.get("label", null)
+	var path = item.get("data", null)
 	
-	get_parent().goto(path)
+	if path:
+		get_parent().goto(path)
+		
 	close()
 	
 func _on_context_menu_move_up() -> void:
@@ -75,7 +77,7 @@ func _on_context_menu_move_down() -> void:
 	menu.move_item(index, index + 1)
 	
 func _on_add_shortcut_button_clicked() -> void:
-	menu.add_item(get_parent().current_path)
+	menu.add_item(get_parent().current_path.get_file(), get_parent().current_path)
 	menu.focus_last()
 	
 func load_shortcuts() -> void:
@@ -129,9 +131,9 @@ func open() -> void:
 		
 		for index in menu.items.size():
 			var item = menu.items[index]
-			var label = item.get("label", "") as String
+			var path = item.get("data", "") as String
 			
-			if browser.current_path.begins_with(label):
+			if browser.current_path.begins_with(path):
 				menu.focus(index)
 				has_focused = true
 		
