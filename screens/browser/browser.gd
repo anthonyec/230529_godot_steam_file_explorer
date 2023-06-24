@@ -115,7 +115,34 @@ func duplicate_file(file: File) -> void:
 	file_list.focus_file_by_id(File.get_id_from_path(base_directory + "/" + new_file_name))
 	
 func rename_file(file: File) -> void:
-	print("Implement: rename file")
+	var keyboard_parameters = Keyboard.Parameters.new()
+	
+	keyboard_parameters.placeholder = "Enter file name"
+	keyboard_parameters.value = file.file_name
+	keyboard_parameters.multiline = false
+	
+	keyboard_parameters.confirmed.connect(func(text: String):
+		var base_path = file.path.get_base_dir()
+		var new_path = base_path + "/" + text
+		
+		if file.path == new_path:
+			push_warning("Not moving, file path is the same")
+			return
+		
+		# TODO: Create a rename `FS` method that checks to ensure the
+		# directory hasn't move around.
+		FS.move(file.path, new_path)
+		
+		reload()
+		file_list.focus_file_by_id(File.get_id_from_path(new_path))
+	)
+	
+	keyboard_parameters.cancelled.connect(func():
+		print("Cancelled")
+	)
+	
+	Keyboard.present(keyboard_parameters, self)
+	
 	
 func trash_file(file: File) -> void:
 	FS.trash(file.path)

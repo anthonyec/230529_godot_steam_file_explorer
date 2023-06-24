@@ -26,6 +26,8 @@ static func get_id_from_path(_path: String) -> String:
 	
 static func new_from(file: File) -> File:
 	return File.new(file.path, file.is_directory)
+	
+
 
 func set_file_name(value: String) -> void:
 	var previous_value = file_name

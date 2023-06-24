@@ -90,13 +90,12 @@ func invoke_action(index: int) -> void:
 	var option = options[index]
 	
 	if option.has("callback"):
-		var callback = option.get("callback")
-		
-		callback.call()
-		
 		if is_closing:
 			return
 			
 		is_closing = true
+		
 		await animate_out()
+		
 		close.emit()
+		option.get("callback").call()

@@ -2,7 +2,7 @@ class_name Sidebar
 extends Window
 
 @onready var panel: Panel = %Panel
-@onready var menu: ListMenu = %ListMenu as ListMenu
+@onready var menu: ListMenu = %ShortcutsListMenu as ListMenu
 @onready var add_shortcut_button: Button = %AddShortcutButton
 
 @export var is_open: bool = false

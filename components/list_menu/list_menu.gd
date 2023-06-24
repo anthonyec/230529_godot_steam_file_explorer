@@ -14,6 +14,9 @@ var item_resource: PackedScene = preload("res://components/list_menu/item.tscn")
 
 var focused_index: int = 0
 
+func _ready() -> void:
+	set_items(items)
+
 func set_items(new_items: Array[Dictionary]) -> void:
 	for child in get_children():
 		remove_child(child)
