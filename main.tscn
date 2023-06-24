@@ -20,4 +20,20 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 position = Vector2i(0, 800)
 
+[node name="Debug" type="Window" parent="."]
+title = "Debug Console"
+position = Vector2i(100, 100)
+size = Vector2i(500, 200)
+visible = false
+always_on_top = true
+
+[node name="DebugConsole" type="TextEdit" parent="Debug"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+editable = false
+
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]

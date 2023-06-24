@@ -3,12 +3,33 @@ extends Control
 
 @onready var browser_screen: Browser = %Browser as Browser
 @onready var status_bar: StatusBar = %StatusBar as StatusBar
+@onready var debug_console: TextEdit = %DebugConsole
 
 var current_screen: Window = null
 
 func _ready() -> void:
+	var init: Dictionary = Steam.steamInit(false)
+	
+	print(init);
+	
 	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
 	_on_screen_focus_entered(browser_screen)
+	
+	debug_console.text += "Steam ID: " + str(Steam.getSteamID())
+	
+	await get_tree().create_timer(5).timeout
+	
+	Steam.showGamepadTextInput(Steam.GAMEPAD_TEXT_INPUT_MODE_NORMAL, Steam.GAMEPAD_TEXT_INPUT_LINE_MODE_SINGLE_LINE, "Rename file", 256, "File name")
+	
+#	await get_tree().create_timer(10).timeout
+#
+#	debug_console.text += "Show overlay"
+#
+#	Steam.activateGameOverlayToWebPage("https://google.com")
+	
+	
+func _process(_delta: float) -> void:
+	Steam.run_callbacks()
 	
 func _on_screen_focus_entered(screen: Screen) -> void:
 	var controls = screen.get_controls()
