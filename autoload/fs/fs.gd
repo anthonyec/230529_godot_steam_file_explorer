@@ -54,6 +54,10 @@ func move(from: String, to: String) -> void:
 	
 	if exit_code != 0:
 		push_error("Failed to move: ", output)
+		
+func rename(path: String, new_file_name: String) -> void:
+	var base_path = path.get_base_dir()
+	move(path, base_path + "/" + new_file_name)
 
 # TODO: Return an error result.
 # TODO: Make asynchronous? Or a FS.add_task for threads?

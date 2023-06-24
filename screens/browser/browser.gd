@@ -121,20 +121,17 @@ func rename_file(file: File) -> void:
 	keyboard_parameters.value = file.file_name
 	keyboard_parameters.multiline = false
 	
-	keyboard_parameters.confirmed.connect(func(text: String):
+	keyboard_parameters.confirmed.connect(func(new_file_name: String):
 		var base_path = file.path.get_base_dir()
-		var new_path = base_path + "/" + text
 		
-		if file.path == new_path:
-			push_warning("Not moving, file path is the same")
+		if new_file_name.strip_edges() == "":
+			push_warning("Not moving, new name is blank")
 			return
 		
-		# TODO: Create a rename `FS` method that checks to ensure the
-		# directory hasn't move around.
-		FS.move(file.path, new_path)
+		FS.rename(file.path, new_file_name)
 		
 		reload()
-		file_list.focus_file_by_id(File.get_id_from_path(new_path))
+		file_list.focus_file_by_id(File.get_id_from_path(base_path + "/" + new_file_name))
 	)
 	
 	keyboard_parameters.cancelled.connect(func():
