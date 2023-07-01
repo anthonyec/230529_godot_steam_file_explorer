@@ -195,29 +195,12 @@ func get_child_path(path: String, child_path: String) -> String:
 	return path + DELIMITER + child_path
 
 func get_directory_contents(path: String) -> Array[File]:
-	var dir_access = DirAccess.open(path)
-	
-#	dir_access.include_hidden = true
-	
-	if not dir_access:
-		push_warning("Failed to access directory, could be empty.")
-		return []
-	
-	# Begin scanning directory.
-	dir_access.list_dir_begin()
-	
+	var entries = FS.get_directory_entries(path)
 	var contents: Array[File] = []
-	var file_name = dir_access.get_next()
-		
-	while file_name != "":
-		var full_path = dir_access.get_current_dir() + DELIMITER + file_name
-		var new_file = File.new(full_path, dir_access.current_is_dir())
-		
-		# Add file to list.
+	
+	for entry in entries:
+		var new_file = File.new_from_entry(entry)
 		contents.append(new_file)
-		
-		# Move onto next file.
-		file_name = dir_access.get_next()
 	
 	return contents
 	

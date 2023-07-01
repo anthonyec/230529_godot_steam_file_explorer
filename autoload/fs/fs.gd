@@ -4,10 +4,26 @@ enum MoveError {
 	FILE_OR_DIRECTORY_DOES_NOT_EXIST
 }
 
+class Entry:
+	var file_name: String
+	var file_name_without_extension: String
+	var path: String
+	var extension: String
+	var is_directory: bool
+	var size: int
+
 var duplicate_regex = RegEx.new()
 
 func _ready() -> void:
 	duplicate_regex.compile("\\scopy(\\s\\d+)?$")
+	
+func is_supported_os(os_names: Array[String], unsupported_action: String = "") -> bool:
+	var is_suporrted = os_names.has(OS.get_name().to_lower())
+	
+	if not is_suporrted and unsupported_action:
+		push_error(unsupported_action + " is not supported in " + OS.get_name())
+	
+	return is_suporrted
 
 # Create a unique directory to access and store temporary files.
 func create_temporary_directory() -> DirAccess:
@@ -31,6 +47,9 @@ func create_temporary_directory() -> DirAccess:
 
 # Move a directory or file to the system's trash bin.
 func trash(path: String) -> void:
+	if not is_supported_os(["linux", "macos"], "trash"):
+		return
+		
 	if OS.get_name() == "Linux":
 		var output: Array = []
 		var exit_code = OS.execute("gio", ["trash", path], output, true)
@@ -98,21 +117,75 @@ func exists(path: String) -> bool:
 	
 	return false
 
-# Return an array of names for files and folders in the directory. It's *not* a
-# recusrive scan, and only lists the direct children.
-func get_files_in_directory(path: String) -> Array[String]:
+func get_directory_entries(path: String) -> Array[FS.Entry]:
 	var dir_access = DirAccess.open(path)
 	
+	if not dir_access:
+		push_error("Failed to get entries for: ", path)
+		return []
+		
 	dir_access.list_dir_begin()
 	
-	var file_names: Array[String] = []
+	var file_sizes = get_file_sizes(path)
 	var file_name = dir_access.get_next()
+	
+	var results: Array[FS.Entry] = []
 		
 	while file_name != "":
-		file_names.append(file_name)
+		var file_path = path + "/" + file_name
+		var file_size = file_sizes.get(file_path, 0)
+		
+		var entry = FS.Entry.new()
+		
+		entry.file_name = file_name
+		entry.file_name_without_extension = get_file_name_without_extension(file_path)
+		entry.path = file_path
+		entry.extension = file_name.get_extension()
+		entry.size = file_size
+		entry.is_directory = is_directory(file_path)
+		
+		results.append(entry)
 		file_name = dir_access.get_next()
 		
-	return file_names
+	return results
+	
+func get_file_sizes(path: String) -> Dictionary:
+	if not is_supported_os(["linux", "macos"], "get_file_sizes"):
+		return {}
+		
+	var output: Array = []
+	var arguments = [
+		# Use apparent size.
+		"-A", 
+		# Display block counts in 1024-byte (1 kiB) blocks.
+		"-k", 
+		# Only list files without recursing. 
+		"-d 1",
+		path
+	]
+	var exit_code = OS.execute("du", arguments, output, true)
+	
+	if exit_code != 0 or output.is_empty():
+		push_error("Failed to get file sizes")
+		return {}
+		
+	var list: String = output[0]
+	var lines = list.split("\n")
+	var results = {}
+	
+	for line in lines:
+		var columns = line.split("\t")
+		
+		if columns.size() < 2:
+			continue
+		
+		var size_as_string: String = columns[0]
+		var file_path: String = columns[1]
+		
+		if size_as_string.strip_edges() != "":
+			results[file_path] = int(size_as_string)
+			
+	return results
 	
 func get_file_name_without_extension(path: String) -> String:
 	var file_name = path.get_file()

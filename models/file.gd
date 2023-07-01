@@ -9,17 +9,19 @@ var path: String
 
 var file_name: String: set = set_file_name
 var extension: String: set = set_extension
+var size: int: set = set_size
 var is_directory: bool: set = set_is_directory
 var is_disabled: bool: set = set_is_disabled
 var is_selected: bool: set = set_is_selected
 
-func _init(from_path: String = "", directory: bool = false) -> void:
+func _init(from_path: String = "", directory: bool = false, size: int = 0) -> void:
 	if from_path:
 		id = File.get_id_from_path(from_path)
 		file_name = from_path.get_file()
 		extension = from_path.get_extension()
 		path = from_path
 		is_directory = directory
+		size = size
 		
 static func get_id_from_path(_path: String) -> String:
 	return _path.md5_text()
@@ -27,7 +29,8 @@ static func get_id_from_path(_path: String) -> String:
 static func new_from(file: File) -> File:
 	return File.new(file.path, file.is_directory)
 	
-
+static func new_from_entry(entry: FS.Entry) -> File:
+	return File.new(entry.path, entry.is_directory, entry.size)
 
 func set_file_name(value: String) -> void:
 	var previous_value = file_name
@@ -40,6 +43,12 @@ func set_extension(value: String) -> void:
 	
 	extension = value
 	changed.emit("extension", previous_value, value)
+	
+func set_size(value: int) -> void:
+	var previous_value = extension
+	
+	size = value
+	changed.emit("sie", previous_value, value)
 	
 func set_is_directory(value: bool) -> void:
 	var previous_value = is_directory
