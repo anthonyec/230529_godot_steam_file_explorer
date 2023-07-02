@@ -150,6 +150,12 @@ func get_directory_entries(path: String) -> Array[FS.Entry]:
 	return results
 	
 func get_file_sizes(path: String) -> Dictionary:
+	# TODO: Disabled because the `du` command recursively scans directories
+	# to find out sizes which causes this to hang. Maybe there's a better way 
+	# with using C++ and system native API in GDExtension to get directory 
+	# apparent sizes. Or maybe this can be run for files only, excluding dirs?
+	return {}
+	
 	if not is_supported_os(["linux", "macos"], "get_file_sizes"):
 		return {}
 		
