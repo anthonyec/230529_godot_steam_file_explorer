@@ -22,18 +22,24 @@ position = Vector2i(0, 800)
 
 [node name="Debug" type="Window" parent="."]
 title = "Debug Console"
-position = Vector2i(100, 100)
-size = Vector2i(500, 200)
+position = Vector2i(600, 100)
+size = Vector2i(500, 400)
 visible = false
 always_on_top = true
+unfocusable = true
+mouse_passthrough = true
 
-[node name="DebugConsole" type="TextEdit" parent="Debug"]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="Debug"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="DebugConsole" type="TextEdit" parent="Debug/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
 editable = false
 
 [connection signal="open_file" from="Browser" to="." method="_on_browser_open_file"]

@@ -12,9 +12,6 @@ func _ready() -> void:
 	
 	print(init);
 	
-	browser_screen.connect("focus_entered", _on_screen_focus_entered.bind(browser_screen))
-	_on_screen_focus_entered(browser_screen)
-	
 	debug_console.text += "Steam ID: " + str(Steam.getSteamID())
 	
 	await get_tree().create_timer(5).timeout
@@ -30,10 +27,6 @@ func _ready() -> void:
 	
 func _process(_delta: float) -> void:
 	Steam.run_callbacks()
-	
-func _on_screen_focus_entered(screen: Screen) -> void:
-	var controls = screen.get_controls()
-	status_bar.set_controls(controls)
 
 func open_screen(screen_name: String, path: String) -> void:
 	var screen_resource: Resource = load("res://screens/" + screen_name + "/" + screen_name + ".tscn")
@@ -57,7 +50,6 @@ func open_screen(screen_name: String, path: String) -> void:
 	
 	# Setup the new screen with signals.
 	current_screen.connect("close", _on_screen_close)
-	current_screen.connect("focus_entered", _on_screen_focus_entered.bind(current_screen))
 	
 	# Show the new screen.
 	add_child(current_screen)

@@ -56,29 +56,7 @@ func _input(event: InputEvent) -> void:
 func _on_panel_resize() -> void:
 	panel.pivot_offset = panel.size / 2
 	sidebar.size.y = get_viewport().size.y
-		
-func get_controls() -> Dictionary:
-	return {
-		"ui_cancel": {
-			"label": "Back",
-			"callback": func(): _on_go_up_button_pressed()
-		},
-		"options": {
-			"label": "Options",
-			"callback": func(): pass
-		},
-		"mark": {
-			"label": "Select",
-			"callback": func():
-				var focused_file = file_list.focused_file
-				focused_file.is_selected = !focused_file.is_selected
-				SFX.play_everywhere("select") \
-		},
-		"ui_accept": {
-			"label": "Open"
-		}
-	}
-	
+
 func show_file_options() -> void:
 	if state_machine.current_state.name != "Default":
 		return

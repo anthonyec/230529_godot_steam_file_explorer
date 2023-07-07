@@ -17,15 +17,7 @@ func _ready() -> void:
 
 func open(path: String) -> void:
 	target_path = path
-	
-func get_controls() -> Dictionary:
-	return {
-		"ui_cancel": {
-			"label": "Exit",
-			"callback": func(): close.emit()
-		}
-	}
-	
+
 func extract(path: String) -> void:
 	var zip_reader = ZIPReader.new()
 	var error: Error = zip_reader.open(path)
