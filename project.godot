@@ -27,6 +27,7 @@ FS="*res://autoload/fs/fs.gd"
 Thumbnails="*res://autoload/thumbnails/thumbnails.gd"
 ContextMenu="*res://autoload/context_menu/context_menu.gd"
 Keyboard="*res://autoload/keyboard/keyboard.gd"
+BackgroundTasks="*res://autoload/background_tasks/background_tasks.gd"
 
 [display]
 

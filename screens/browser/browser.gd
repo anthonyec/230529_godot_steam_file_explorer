@@ -110,7 +110,12 @@ func duplicate_file(file: File) -> void:
 	var new_file_name = FS.get_next_file_name(file.path)
 	var base_directory = file.path.get_base_dir()
 	
-	FS.copy(file.path, base_directory + "/" + new_file_name)
+	var task = BackgroundTask.create(func():
+		FS.copy(file.path, base_directory + "/" + new_file_name)
+	).set_high_priority(true).start()
+	
+	await task.finished
+	
 	reload()
 	file_list.focus_file_by_id(File.get_id_from_path(base_directory + "/" + new_file_name))
 	
@@ -139,10 +144,14 @@ func rename_file(file: File) -> void:
 	)
 	
 	Keyboard.present(keyboard_parameters, self)
-	
-	
+
 func trash_file(file: File) -> void:
-	FS.trash(file.path)
+	var task = BackgroundTask.create(func():
+		FS.trash(file.path)
+	).set_high_priority(true).start()
+	
+	await task.finished
+	
 	reload()
 	
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
