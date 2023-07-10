@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://dcxt7atnqfjto"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e3rn1"]
+shadow_size = 5
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_exqtn"]
+
+[node name="FilePlaceholder" type="Panel"]
+offset_right = 300.0
+offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e3rn1")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 60)
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="MarginContainer/HBoxContainer/AspectRatioContainer"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0.403922)
+layout_mode = 2
+texture = SubResource("CompressedTexture2D_exqtn")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 20
+text = "File name"
+text_overrun_behavior = 3

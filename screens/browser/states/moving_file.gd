@@ -10,7 +10,7 @@ func awake() -> void:
 	super()
 
 func enter(params: Dictionary) -> void:
-	assert(params.has("file"), "File param required when transitioning to this state")
+	assert(params.has("file"), "The `file` param is required")
 	file = params.file
 	
 	browser.directory_action_button.visible = true

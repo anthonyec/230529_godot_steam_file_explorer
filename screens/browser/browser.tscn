@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bt1l6u0dxhrsp" path="res://components/state_machine/state.tscn" id="3_ehd7w"]
 [ext_resource type="Script" path="res://screens/browser/states/default.gd" id="4_35l2k"]
 [ext_resource type="Script" path="res://screens/browser/states/wiggle_file.gd" id="5_xr0a3"]
-[ext_resource type="Script" path="res://screens/browser/states/moving_file.gd" id="6_bdxkr"]
+[ext_resource type="Script" path="res://screens/browser/states/move_files.gd" id="6_kaavn"]
 [ext_resource type="Script" path="res://screens/browser/grab_hand.gd" id="11_0kk5l"]
 [ext_resource type="Script" path="res://screens/browser/spring.gd" id="12_ivume"]
 [ext_resource type="Script" path="res://screens/browser/sidebar.gd" id="13_h71f0"]
@@ -33,8 +33,8 @@ script = ExtResource("4_35l2k")
 [node name="WiggleFile" parent="StateMachine" instance=ExtResource("3_ehd7w")]
 script = ExtResource("5_xr0a3")
 
-[node name="MoveFile" parent="StateMachine" instance=ExtResource("3_ehd7w")]
-script = ExtResource("6_bdxkr")
+[node name="MoveFiles" parent="StateMachine" instance=ExtResource("3_ehd7w")]
+script = ExtResource("6_kaavn")
 
 [node name="Panel" type="Panel" parent="."]
 unique_name_in_owner = true

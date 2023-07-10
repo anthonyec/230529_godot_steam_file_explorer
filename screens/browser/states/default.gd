@@ -28,6 +28,12 @@ func handle_input(event: InputEvent) -> void:
 		})
 
 func handle_message(title: String, params: Dictionary) -> void:
+	if title == "move_files":
+		state_machine.transition_to("MoveFiles", {
+			"files": params.get("files")
+		})
+		return
+	
 	if title == "move_file":
 		assert(params.has("file"), "File required as a start_moving_file param")
 		

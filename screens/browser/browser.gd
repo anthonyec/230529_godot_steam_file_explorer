@@ -77,16 +77,16 @@ func show_file_options() -> void:
 	ContextMenu.show(menu_title, [
 		# TODO: Move this somewhere else, it's not file specfic!
 		{ "label": "Reload", "callback": reload },
-		{ "label": "Move", "callback": move_file.bind(files[0]) },
+		{ "label": "Move", "callback": move_file.bind(files) },
 		{ "label": "Duplicate", "callback": duplicate_file.bind(files) },
 		{ "label": "Rename", "callback": rename_file.bind(files[0]), "hidden": is_multiple_files },
 		{ "label": "---" },
 		{ "label": "Trash", "callback": trash_file.bind(files) },
 	], self)
 	
-func move_file(file: File) -> void:
-	state_machine.send_message("move_file", {
-		"file": file
+func move_file(files: Array[File]) -> void:
+	state_machine.send_message("move_files", {
+		"files": files
 	})
 	
 func duplicate_file(files: Array[File]) -> void:
