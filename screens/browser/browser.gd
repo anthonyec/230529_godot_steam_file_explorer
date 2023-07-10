@@ -61,22 +61,27 @@ func show_file_options() -> void:
 	if state_machine.current_state.name != "Default":
 		return
 	
-	var focused_file = file_list.focused_file
-		
-	if not focused_file:
+	# A new `File` is created because the original file will be freed when 
+	# the list changes and items are removed e.g when moving files between directories.
+	var files: Array[File] = File.new_from(file_list.get_selected_or_focused_files())
+	
+	if files.is_empty():
 		return
 	
-	# A new `File` is created because the original file will be freed when 
-	# the list changes and items are removed.
-	var file = File.new_from(focused_file)
+	var is_multiple_files = files.size() > 1
+	var menu_title = "Options for " + files[0].file_name
 	
-	ContextMenu.show("Options for " + file.file_name, [
-		{ "label": "Reload", "callback": reload }, # TODO: Move this somewhere else, it's not file specfic!
-		{ "label": "Move", "callback": move_file.bind(file) },
-		{ "label": "Duplicate", "callback": duplicate_file.bind(file) },
-		{ "label": "Rename", "callback": rename_file.bind(file) },
+	if is_multiple_files:
+		menu_title = "Options for " + str(files.size()) + " files"
+
+	ContextMenu.show(menu_title, [
+		# TODO: Move this somewhere else, it's not file specfic!
+		{ "label": "Reload", "callback": reload },
+		{ "label": "Move", "callback": move_file.bind(files[0]) },
+		{ "label": "Duplicate", "callback": duplicate_file.bind(files) },
+		{ "label": "Rename", "callback": rename_file.bind(files[0]), "hidden": is_multiple_files },
 		{ "label": "---" },
-		{ "label": "Trash", "callback": trash_file.bind(file) },
+		{ "label": "Trash", "callback": trash_file.bind(files) },
 	], self)
 	
 func move_file(file: File) -> void:
@@ -84,18 +89,20 @@ func move_file(file: File) -> void:
 		"file": file
 	})
 	
-func duplicate_file(file: File) -> void:
-	var new_file_name = FS.get_next_file_name(file.path)
-	var base_directory = file.path.get_base_dir()
+func duplicate_file(files: Array[File]) -> void:
+	var copy_arguments: Array = [];
 	
-	var task = BackgroundTask.create(func():
+	for file in files:
+		var new_file_name = FS.get_next_file_name(file.path)
+		var base_directory = file.path.get_base_dir()
+		
 		FS.copy(file.path, base_directory + "/" + new_file_name)
-	).set_high_priority(true).start()
-	
-	await task.finished
 	
 	reload()
-	file_list.focus_file_by_id(File.get_id_from_path(base_directory + "/" + new_file_name))
+	
+#	file_list.focus_file_by_id(File.get_id_from_path(copy_arguments[0][1]))
+	file_list.unselect_all()
+
 	
 func rename_file(file: File) -> void:
 	var keyboard_parameters = Keyboard.Parameters.new()
@@ -123,14 +130,12 @@ func rename_file(file: File) -> void:
 	
 	Keyboard.present(keyboard_parameters, self)
 
-func trash_file(file: File) -> void:
-	var task = BackgroundTask.create(func():
+func trash_file(files: Array[File]) -> void:
+	for file in files:
 		FS.trash(file.path)
-	).set_high_priority(true).start()
-	
-	await task.finished
-	
+
 	reload()
+	file_list.unselect_all()
 	
 func sort_files_by_kind(file_a: File, file_b: File) -> bool:
 	if file_a.is_directory and not file_b.is_directory:

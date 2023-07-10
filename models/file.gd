@@ -26,9 +26,14 @@ func _init(from_path: String = "", directory: bool = false, size: int = 0) -> vo
 static func get_id_from_path(_path: String) -> String:
 	return _path.md5_text()
 	
-static func new_from(file: File) -> File:
-	return File.new(file.path, file.is_directory)
+static func new_from(files: Array[File]) -> Array[File]:
+	var new_files: Array[File] = []
 	
+	for file in files:
+		new_files.append(File.new(file.path, file.is_directory))
+	
+	return new_files
+
 static func new_from_entry(entry: FS.Entry) -> File:
 	return File.new(entry.path, entry.is_directory, entry.size)
 

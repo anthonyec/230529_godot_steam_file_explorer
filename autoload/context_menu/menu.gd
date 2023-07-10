@@ -17,6 +17,9 @@ func _ready() -> void:
 	title_label.text = title
 	
 	for option in options:
+		if option.get("hidden", false):
+			continue
+		
 		option_list.add_item(option.get("label", "<untitled>"))
 		
 	option_list.grab_focus()

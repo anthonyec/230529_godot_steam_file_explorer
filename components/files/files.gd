@@ -57,10 +57,14 @@ func add_item(item: FileItem, index: int = -1) -> void:
 	
 	if index != -1:
 		list.move_child(item, index)
+		files.insert(index, item.file)
+	else:
+		files.append(item.file)
 	
 func remove_item(item: FileItem) -> void:
 	list.remove_child(item)
 	id_to_item_map.erase(item.file.id)
+	files.remove_at(files.find(item.file))
 	
 func has_item_by_id(id: String) -> bool:
 	return id_to_item_map.has(id)
@@ -164,6 +168,24 @@ func focus_file(file: File) -> void:
 func focus_file_by_id(id: String) -> void:
 	if has_item_by_id(id):
 		get_item_by_id(id).grab_focus()
+
+## Get array of files that have been selected.
+func get_selected_files() -> Array[File]:
+	return files.filter(func (file: File):
+		return file.is_selected
+	)
+	
+func unselect_all() -> void:
+	for file in files:
+		file.is_selected = false
+	
+func get_selected_or_focused_files() -> Array[File]:
+	var selected_files: Array[File] = get_selected_files()
+	
+	if selected_files.is_empty() and focused_file:
+		selected_files.append(focused_file)
+	
+	return selected_files
 	
 func scroll_into_view(item: FileItem) -> void:
 	var item_rect = item.get_rect()

@@ -120,7 +120,7 @@ func perform_move() -> void:
 	browser.file_list.focus_file_by_id(new_file_id)
 	
 	var new_item = browser.file_list.get_item_by_id(new_file_id)
-	file = File.new_from(new_item.file)
+	file = File.new_from([new_item.file])[0]
 	
 	# TODO: Wait for file appear animation to happen instead of timer.
 	await get_tree().create_timer(0.2).timeout
