@@ -3,7 +3,7 @@ extends BrowserState
 var was_grabbing: bool = false
 
 func enter(_params: Dictionary) -> void:
-	browser.move_to_folder_button.visible = false
+	browser.move_actions.visible = false
 	
 func exit() -> void:
 	pass

@@ -109,6 +109,31 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="MoveActions" type="HBoxContainer" parent="Panel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="CancelMoveButton" type="Button" parent="Panel/VBoxContainer/MoveActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_7khgx")
+theme_override_styles/focus = ExtResource("3_2pk85")
+text = "Cancel"
+
+[node name="MoveToFolderButton" type="Button" parent="Panel/VBoxContainer/MoveActions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(2.08165e-12, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = ExtResource("2_7khgx")
+theme_override_styles/focus = ExtResource("3_2pk85")
+text = "Move to this folder"
+
 [node name="GrabHand" type="TextureRect" parent="."]
 offset_left = 1000.0
 offset_top = 600.0
@@ -123,26 +148,9 @@ stiffness = 200.0
 damping = 20.0
 length = 2.08165e-12
 
-[node name="MoveToFolderButton" type="Button" parent="."]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(2.08165e-12, 50)
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -640.0
-offset_top = -50.0
-offset_right = 640.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = ExtResource("2_7khgx")
-theme_override_styles/focus = ExtResource("3_2pk85")
-text = "Move to this folder"
-
 [node name="Sidebar" type="Window" parent="."]
 size = Vector2i(400, 800)
+visible = false
 transient = true
 exclusive = true
 unresizable = true

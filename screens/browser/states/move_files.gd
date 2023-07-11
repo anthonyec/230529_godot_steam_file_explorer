@@ -5,17 +5,20 @@ const OFFSET: Vector2 = Vector2(2, 3)
 var FilePlaceholder: PackedScene = preload("res://components/file_placeholder/file_placeholder.tscn")
 
 var files: Array[File] = []
+var cancelled: bool = false
 var grabbed_placeholders: Array[FilePlaceholder] = []
 
 func awake() -> void:
 	super()
 	browser.move_to_folder_button.connect("pressed", _on_move_to_folder_button_pressed)
+	browser.cancel_move_button.connect("pressed", _on_cancel_move_button_pressed)
 
 func enter(params: Dictionary) -> void:
 	assert(params.has("files"), "The `files` param is required")
 	files = params.get("files")
+	cancelled = false
 	
-	browser.move_to_folder_button.visible = true
+	browser.move_actions.visible = true
 	browser.grab_hand.appear()
 	
 	# Create file placeholder items.
@@ -61,7 +64,7 @@ func enter(params: Dictionary) -> void:
 			await tween.finished
 
 func exit() -> void:
-	browser.move_to_folder_button.visible = false
+	browser.move_actions.visible = false
 	
 	# Animate placeholders to back to original positions if possible.
 	var index = grabbed_placeholders.size() - 1
@@ -84,7 +87,7 @@ func exit() -> void:
 		
 		# If no item is found in the list, do a generic fade out. Otherwise 
 		# animate them to the size and position in the list.
-		if item == null:
+		if item == null or cancelled:
 			tween.tween_property(placeholder, "position", placeholder.position - Vector2(0, 80), 0.3)
 			tween.tween_property(placeholder, "modulate", Color(1, 1, 1, 0), 0.3)
 			tween.tween_property(placeholder, "scale", Vector2(1.1, 1.1), 0.3)
@@ -97,8 +100,8 @@ func exit() -> void:
 		# When each placeholder tween finishes fade out and remove.
 		tween.connect("finished", _on_placeholder_exit_tween_finished.bind(placeholder))
 		
-		# Only stagged animation if items exist in list.
-		if item != null:
+		# Only stagger animation if items exist in list.
+		if item != null or cancelled:
 			# Stagger animation between each placeholder.
 			# TODO: Find out why this does not work well with lower values than 0.1.
 			await tween.tween_interval(0.1).finished
@@ -138,4 +141,8 @@ func _on_placeholder_exit_tween_finished(placeholder: Panel) -> void:
 	
 func _on_move_to_folder_button_pressed() -> void:
 	move_files()
+	state_machine.transition_to("Default")
+	
+func _on_cancel_move_button_pressed() -> void:
+	cancelled = true
 	state_machine.transition_to("Default")
