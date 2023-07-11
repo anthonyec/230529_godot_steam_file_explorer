@@ -19,7 +19,7 @@ enum InteractionMode {
 @onready var title_label: Label = %Title
 @onready var path_label: Label = %Path
 @onready var count_label: Label = %Count
-@onready var directory_action_button: Button = %DirectoryActionButton
+@onready var move_to_folder_button: Button = %MoveToFolderButton
 @onready var state_machine: StateMachine = $StateMachine as StateMachine
 @onready var grab_hand: GrabHand = $GrabHand as GrabHand
 @onready var sidebar: Sidebar = $Sidebar as Sidebar

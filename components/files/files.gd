@@ -3,6 +3,7 @@ extends Control
 
 signal item_focused(file: File)
 signal item_selected(file: File)
+signal finished_animation
 
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var list: VBoxContainer = %List

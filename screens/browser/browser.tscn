@@ -123,7 +123,7 @@ stiffness = 200.0
 damping = 20.0
 length = 2.08165e-12
 
-[node name="DirectoryActionButton" type="Button" parent="."]
+[node name="MoveToFolderButton" type="Button" parent="."]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(2.08165e-12, 50)
 anchors_preset = 7
@@ -139,7 +139,7 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = ExtResource("2_7khgx")
 theme_override_styles/focus = ExtResource("3_2pk85")
-text = "Directory action label"
+text = "Move to this folder"
 
 [node name="Sidebar" type="Window" parent="."]
 size = Vector2i(400, 800)
@@ -175,4 +175,3 @@ layout_mode = 2
 [connection signal="pressed" from="Panel/VBoxContainer/TitleBar/HBoxContainer/GoUpButton" to="." method="_on_go_up_button_pressed"]
 [connection signal="item_focused" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_focused"]
 [connection signal="item_selected" from="Panel/VBoxContainer/Files" to="." method="_on_files_item_selected"]
-[connection signal="pressed" from="DirectoryActionButton" to="." method="_on_directory_action_button_pressed"]
