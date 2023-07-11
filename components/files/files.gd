@@ -47,7 +47,6 @@ func create_item(file: File) -> FileItem:
 	var item = item_resource.instantiate() as FileItem
 	
 	item.file = file
-	
 	item.connect("pressed", _on_item_pressed.bind(file))
 	
 	return item
@@ -106,7 +105,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			add_item(item, index)
 			
 			var target_size = item.custom_minimum_size
-			var tween = get_tree().create_tween()
+			var tween = item.create_tween()
 			
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.set_trans(Tween.TRANS_EXPO)
@@ -140,7 +139,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 	for child in children_to_remove:
 		# TODO: Set correct up and down neighbours so that a file can't be 
 		# focused during it's removal animation.
-		var tween = get_tree().create_tween()
+		var tween = child.create_tween()
 		
 		tween.set_ease(Tween.EASE_IN_OUT)
 		tween.set_trans(Tween.TRANS_EXPO)

@@ -7,10 +7,9 @@ var end_position: Vector2
 
 func _process(_delta: float) -> void:
 	var viewport_size = Vector2(get_viewport().size)
-	
 	var start_position: Vector2 = viewport_size + Vector2(50, 50)
-	end_position = viewport_size - Vector2(200, 200)
 	
+	end_position = viewport_size - Vector2(200, 200)
 	position = start_position.lerp(end_position, spring.x)
 	
 func disappear() -> void:

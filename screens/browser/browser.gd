@@ -32,9 +32,7 @@ var was_grabbing: bool = false
 
 func _ready() -> void:
 	super()
-	
 	goto(current_path)
-	
 	panel.connect("resized", _on_panel_resize)
 	_on_panel_resize()
 	
