@@ -19,6 +19,7 @@ const item_resource: Resource = preload("res://components/files/file.tscn")
 var focused_file: File
 var files: Array[File] = []
 var invisible_file_ids: Array[String]
+var file_overrides: Dictionary = {}
 
 var list_id: String = ""
 var id_to_item_map: Dictionary = {}
@@ -77,7 +78,7 @@ func get_item_by_id(id: String) -> FileItem:
 
 func set_files(id: String, new_files: Array[File]) -> void:
 	empty_state.visible = new_files.is_empty()
-		
+	
 	# Blast away the whole list and start again if the ID has changed. This is
 	# so it does not animate between directory changes, where every file would 
 	# be new.
@@ -92,6 +93,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			add_item(item)
 		
 		focus_first_item()
+		invisible_file_ids = []
 		return
 	
 	var file_ids: Dictionary = {}
@@ -113,6 +115,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			var target_size = item.custom_minimum_size
 			var tween = item.create_tween()
 			
+			# Add tween to list of animations to be played after adding items.
 			tween.stop()
 			tweens.append(tween)
 			
@@ -121,6 +124,8 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			tween.set_parallel(true)
 			tween.tween_property(item, "custom_minimum_size:y", target_size.y, 0.3).from(0)
 			
+			# Don't animate the opacity if the file is set to be invisible. 
+			# The invisible-ness of files is instant.
 			if not new_file.is_invisible:
 				tween.tween_property(item, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
 			
@@ -152,6 +157,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		# focused during it's removal animation.
 		var tween = child.create_tween()
 		
+		# Add tween to list of animations to be played after removing items.
 		tween.stop()
 		tweens.append(tween)
 		

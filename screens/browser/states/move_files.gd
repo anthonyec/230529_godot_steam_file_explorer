@@ -85,12 +85,13 @@ func exit() -> void:
 		tween.set_ease(Tween.EASE_OUT)
 		tween.set_trans(Tween.TRANS_SINE)
 		
-		# If no item is found in the list, do a generic fade out. Otherwise 
-		# animate them to the size and position in the list.
+		# If no item is found in the list, do a generic fade out.
 		if item == null or cancelled:
 			tween.tween_property(placeholder, "position", placeholder.position - Vector2(0, 80), 0.3)
 			tween.tween_property(placeholder, "modulate", Color(1, 1, 1, 0), 0.3)
 			tween.tween_property(placeholder, "scale", Vector2(1.1, 1.1), 0.3)
+			
+		# Otherwise  animate them to the size and position in the list.
 		else:
 			var rect = item.get_global_rect()
 			tween.tween_property(placeholder, "position", rect.position, 0.3)
@@ -120,15 +121,20 @@ func update(_delta: float) -> void:
 		var placeholder = grabbed_placeholders[index]
 		placeholder.position = browser.grab_hand.position + OFFSET * index
 
-func move_files() -> void:
+func move_files() -> int:
 	for file in files:
-		FS.move(file.path, browser.current_path)
+		var result = FileSystemProxy.move(file.path, browser.current_path)
 		
+		if result != 0:
+			return result
+		
+		# Make file invisible while the placeholder is animated into place.
 		var id := File.get_id_from_path(browser.current_path + "/" + file.file_name)
 		browser.file_list.set_invisible_file(id)
 	
 	browser.reload()
 	await browser.file_list.animations_finished
+	return 0
 	
 func _on_placeholder_enter_tween_finished(placeholder: FilePlaceholder) -> void:
 	grabbed_placeholders.append(placeholder)
@@ -137,6 +143,7 @@ func _on_placeholder_enter_tween_finished(placeholder: FilePlaceholder) -> void:
 func _on_placeholder_exit_tween_finished(placeholder: FilePlaceholder) -> void:
 	var tween = placeholder.create_tween()
 	
+	# Show the file once the placeholder animation is finished.
 	var id := File.get_id_from_path(browser.current_path + "/" + placeholder.file.file_name)
 	browser.file_list.set_visible_file(id)
 	
@@ -146,7 +153,12 @@ func _on_placeholder_exit_tween_finished(placeholder: FilePlaceholder) -> void:
 	browser.remove_child(placeholder)
 	
 func _on_move_to_folder_button_pressed() -> void:
-	await move_files()
+	var result = await move_files()
+	
+	if result != 0:
+		print("Failed to move files!")
+		return
+		
 	state_machine.transition_to("Default")
 	
 func _on_cancel_move_button_pressed() -> void:

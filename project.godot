@@ -24,6 +24,7 @@ boot_splash/show_image=false
 
 SFX="*res://addons/anthonyec.sfx/sfx.gd"
 FS="*res://autoload/fs/fs.gd"
+FileSystemProxy="*res://autoload/file_system_proxy/file_system_proxy.gd"
 Thumbnails="*res://autoload/thumbnails/thumbnails.gd"
 ContextMenu="*res://autoload/context_menu/context_menu.gd"
 Keyboard="*res://autoload/keyboard/keyboard.gd"

@@ -187,7 +187,7 @@ func get_child_path(path: String, child_path: String) -> String:
 	return path + DELIMITER + child_path
 
 func get_directory_contents(path: String) -> Array[File]:
-	var entries = FS.get_directory_entries(path)
+	var entries = FileSystemProxy.get_directory_entries(path)
 	var contents: Array[File] = []
 	
 	for entry in entries:
