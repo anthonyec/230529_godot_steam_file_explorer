@@ -3,7 +3,9 @@ extends Control
 
 signal item_focused(file: File)
 signal item_selected(file: File)
-signal finished_animation
+
+## Emitted once all adding and removal animations for items have finished.
+signal animations_finished
 
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var list: VBoxContainer = %List
@@ -23,7 +25,7 @@ var id_to_item_map: Dictionary = {}
 func _ready() -> void:
 	get_viewport().connect("gui_focus_changed", _on_gui_focus_changed)
 	
-func _on_gui_focus_changed(control: Control) -> void:	
+func _on_gui_focus_changed(control: Control) -> void:
 	if control.get_parent() == list:
 		control = control as FileItem
 		focused_file = control.file
@@ -70,10 +72,7 @@ func has_item_by_id(id: String) -> bool:
 	return id_to_item_map.has(id)
 	
 func get_item_by_id(id: String) -> FileItem:
-	if not has_item_by_id(id):
-		return null
-		
-	return id_to_item_map[id]
+	return id_to_item_map.get(id, null)
 
 func set_files(id: String, new_files: Array[File]) -> void:
 	empty_state.visible = new_files.is_empty()
@@ -95,6 +94,7 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		return
 	
 	var file_ids: Dictionary = {}
+	var tweens: Array[Tween] = []
 	
 	for index in new_files.size():
 		var new_file = new_files[index]
@@ -106,6 +106,9 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			
 			var target_size = item.custom_minimum_size
 			var tween = item.create_tween()
+			
+			tween.stop()
+			tweens.append(tween)
 			
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.set_trans(Tween.TRANS_EXPO)
@@ -141,6 +144,9 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		# focused during it's removal animation.
 		var tween = child.create_tween()
 		
+		tween.stop()
+		tweens.append(tween)
+		
 		tween.set_ease(Tween.EASE_IN_OUT)
 		tween.set_trans(Tween.TRANS_EXPO)
 		tween.tween_property(child, "modulate", Color(1, 1, 1, 0), 0.3)
@@ -148,6 +154,22 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		tween.tween_callback(func():
 			remove_item(child)
 		)
+	
+	# Animate the adding and removal of items all in one go so that it's easy
+	# to know when all animations have finished.
+	var animations := WaitGroup.new()
+	
+	animations.connect("finished", func():
+		animations_finished.emit()
+	)
+	
+	for index in tweens.size():
+		var tween = tweens[index]
+		
+		animations.add()
+		tween.connect("finished", animations.done)
+		
+		tween.play()
 	
 func get_first_item() -> FileItem:
 	if list.get_child_count() == 0:

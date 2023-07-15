@@ -125,7 +125,7 @@ func move_files() -> void:
 		FS.move(file.path, browser.current_path)
 	
 	browser.reload()
-	# TODO: Add await signal for all file_list animations to finish.
+	await browser.file_list.animations_finished
 	
 func _on_placeholder_enter_tween_finished(placeholder: Panel) -> void:
 	grabbed_placeholders.append(placeholder)
@@ -140,7 +140,7 @@ func _on_placeholder_exit_tween_finished(placeholder: Panel) -> void:
 	browser.remove_child(placeholder)
 	
 func _on_move_to_folder_button_pressed() -> void:
-	move_files()
+	await move_files()
 	state_machine.transition_to("Default")
 	
 func _on_cancel_move_button_pressed() -> void:
