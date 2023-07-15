@@ -123,16 +123,22 @@ func update(_delta: float) -> void:
 func move_files() -> void:
 	for file in files:
 		FS.move(file.path, browser.current_path)
+		
+		var id := File.get_id_from_path(browser.current_path + "/" + file.file_name)
+		browser.file_list.set_invisible_file(id)
 	
 	browser.reload()
 	await browser.file_list.animations_finished
 	
-func _on_placeholder_enter_tween_finished(placeholder: Panel) -> void:
+func _on_placeholder_enter_tween_finished(placeholder: FilePlaceholder) -> void:
 	grabbed_placeholders.append(placeholder)
 	browser.grab_hand.push(Vector2(1, 1))
 
-func _on_placeholder_exit_tween_finished(placeholder: Panel) -> void:
+func _on_placeholder_exit_tween_finished(placeholder: FilePlaceholder) -> void:
 	var tween = placeholder.create_tween()
+	
+	var id := File.get_id_from_path(browser.current_path + "/" + placeholder.file.file_name)
+	browser.file_list.set_visible_file(id)
 	
 	# Fade out and remove.
 	tween.tween_property(placeholder, "modulate", Color(1, 1, 1, 0), 0.3)

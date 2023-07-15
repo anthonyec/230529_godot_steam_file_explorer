@@ -18,6 +18,7 @@ const item_resource: Resource = preload("res://components/files/file.tscn")
 
 var focused_file: File
 var files: Array[File] = []
+var invisible_file_ids: Array[String]
 
 var list_id: String = ""
 var id_to_item_map: Dictionary = {}
@@ -101,6 +102,11 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		var item_exists = has_item_by_id(new_file.id)
 		
 		if not item_exists:
+			var hidden_index = invisible_file_ids.find(new_file.id)
+			
+			if hidden_index != -1:
+				new_file.is_invisible = true
+				
 			var item = create_item(new_file)
 			add_item(item, index)
 			
@@ -113,8 +119,10 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			tween.set_ease(Tween.EASE_IN_OUT)
 			tween.set_trans(Tween.TRANS_EXPO)
 			tween.set_parallel(true)
-			tween.tween_property(item, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
 			tween.tween_property(item, "custom_minimum_size:y", target_size.y, 0.3).from(0)
+			
+			if not new_file.is_invisible:
+				tween.tween_property(item, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
 			
 		file_ids[new_file.id] = true
 	
@@ -227,6 +235,25 @@ func scroll_into_view(item: FileItem) -> void:
 		scroll_tween.tween_property(scroll_container, "scroll_vertical", new_scroll_position, 0.2) \
 			.set_ease(Tween.EASE_OUT) \
 			.set_trans(Tween.TRANS_CIRC)
+			
+func set_invisible_file(id: String) -> void:
+	invisible_file_ids.append(id)
+	
+	var item = get_item_by_id(id)
+	
+	if item:
+		item.file.is_invisible = true
+		
+func set_visible_file(id: String) -> void:
+	var index = invisible_file_ids.find(id)
+	
+	if index != -1:
+		invisible_file_ids.remove_at(index)
+		
+	var item = get_item_by_id(id)
+	
+	if item:
+		item.file.is_invisible = false
 	
 func _on_item_pressed(file: File) -> void:
 	item_selected.emit(file)

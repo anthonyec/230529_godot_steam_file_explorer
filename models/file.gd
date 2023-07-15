@@ -13,6 +13,7 @@ var size: int: set = set_size
 var is_directory: bool: set = set_is_directory
 var is_disabled: bool: set = set_is_disabled
 var is_selected: bool: set = set_is_selected
+var is_invisible: bool: set = set_is_invisible
 
 func _init(from_path: String = "", directory: bool = false, size: int = 0) -> void:
 	if from_path:
@@ -72,3 +73,9 @@ func set_is_selected(value: bool) -> void:
 	
 	is_selected = value
 	changed.emit("is_selected", previous_value, value)
+	
+func set_is_invisible(value: bool) -> void:
+	var previous_value = is_invisible
+	
+	is_invisible = value
+	changed.emit("is_invisible", previous_value, value)
