@@ -10,6 +10,7 @@ class Entry:
 	var path: String
 	var extension: String
 	var is_directory: bool
+	var is_deleted: bool
 	var size: int
 
 var duplicate_regex = RegEx.new()
