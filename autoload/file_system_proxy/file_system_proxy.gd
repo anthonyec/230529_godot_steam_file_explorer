@@ -1,47 +1,59 @@
 extends Node
 
-var entry_overrides: Dictionary = {}
-var entry_additions: Dictionary = {}
-var entry_deletions: Dictionary = {}
-
-var proxy: Dictionary = {
-	"/Users/anthony/Downloads/test_folder/1": FS.Entry.new(),
-	"/Users/anthony/Downloads/test_folder/NEW_FILE": FS.Entry.new()
+enum MoveError {
+	NONE = 0,
+	FILE_ALREADY_EXISTS
 }
 
-func get_proxy_entry(path: String) -> FS.Entry:
-	return FS.Entry.new()
+## Proxy files and folders that can represent new, overriden or deleted entries.
+## The keys of the proxy are an absolute entry path and the value is a `FS.Entry`,
+## For example, `{ "/Users/anthony/Downloads/test_folder": FS.Entry.new() }`.
+var proxy: Dictionary = {}
 
 func get_directory_entries(path: String) -> Array[FS.Entry]:
 	var entries := FS.get_directory_entries(path)
 	
+	var modified_entry_paths: Array[String] = []
 	var index: int = entries.size() - 1
 	
-	while index > 0:
+	# Iterate over entries backwards so that they can be removed while looping.
+	while index >= 0:
 		var entry = entries[index]
-		var overrides = entry_overrides.get(path, []) as Array[FS.Entry]
-		var deletions = entry_deletions.get(path, []) as Array[FS.Entry]
+		var proxy_entry = proxy.get(entry.path) as FS.Entry
 		
-		var found_override = has_entry_by_file_name(overrides, entry.file_name)
-		var found_deletion = has_entry_by_file_name(deletions, entry.file_name)
-		
-		if found_override:
-			entries[index] = found_override
+		if proxy_entry:
+			# Add to list of modified to exclude from being added as new entries.
+			modified_entry_paths.append(entry.path)
 			
-		if found_deletion:
-			entries.remove_at(index)
+			# Override entry with proxy, either delete it or replace it.
+			if proxy_entry.is_deleted:
+				entries.remove_at(index)
+			else:
+				entries[index] = proxy_entry
 			
 		index -= 1
-	
-	for entry in entry_additions.get(path, []):
-		entries.append(entry)
+		
+	for proxy_path in proxy.keys():
+		var base_proxy_path = (proxy_path as String).get_base_dir()
+		
+		# Only include proxy entries in that are in the current directory.
+		if base_proxy_path != path:
+			continue 
+			
+		# Exclude proxy entries that have already been modified.
+		if modified_entry_paths.has(proxy_path):
+			continue
+			
+		entries.append(proxy[proxy_path])
 	
 	return entries
 
-func move(from: String, to: String) -> int:
+func move(from: String, to: String) -> MoveError:
 	var file_name = from.get_file()
 	var new_path = to + "/" + file_name
-	var from_base_directory = from.get_base_dir()
+	
+	if exists(new_path):
+		return MoveError.FILE_ALREADY_EXISTS
 	
 	var new_entry = FS.Entry.new()
 	new_entry.file_name = file_name
@@ -56,34 +68,20 @@ func move(from: String, to: String) -> int:
 	old_entry.path = from
 	old_entry.is_directory = FS.is_directory(from)
 	old_entry.extension = file_name.get_extension()
+	old_entry.is_deleted = true
 	
-	if not entry_additions.has(to):
-		entry_additions[to] = []
-		
-	# TODO: Add fail for tryingto move folder inside itself.
-	if has_entry_by_file_name(entry_additions[to], file_name):
-		return 1
-		
-	if FS.exists(new_path):
-		return 1
-		
-	entry_additions[to].append(new_entry)
+	proxy[new_path] = new_entry
+	proxy[from] = old_entry
 	
-	if not entry_deletions.has(from_base_directory):
-		entry_deletions[from_base_directory] = []
-		
-	entry_deletions[from_base_directory].append(old_entry)
-	
-#	FS.move(from, to)
-	return 0
-
-# TODO: Fix
-func has_entry_by_file_name(entries: Array, file_name: String) -> bool:
-	var found_entries = entries.filter(func(entry: FS.Entry):
-		return entry.file_name == file_name
+	var task = BackgroundTask.create(func():
+		FS.move(from, to)
+		proxy.erase(new_path)
+		proxy.erase(from)
 	)
+	task.set_high_priority(true)
+	task.start()
 	
-	return not found_entries.is_empty()
+	return MoveError.NONE
 	
 func copy(from: String, to: String) -> void:
 	pass
@@ -94,5 +92,8 @@ func trash(path: String) -> void:
 func rename(path: String, new_name: String) -> void:
 	pass
 
-func exists(path: String) -> void:
-	pass
+func exists(path: String) -> bool:
+	if proxy.has(path):
+		return true
+	
+	return FS.exists(path)
