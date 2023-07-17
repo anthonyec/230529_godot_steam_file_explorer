@@ -11,6 +11,7 @@ class Entry:
 	var extension: String
 	var is_directory: bool
 	var is_deleted: bool
+	var is_transient: bool
 	var size: int
 
 var duplicate_regex = RegEx.new()
@@ -207,30 +208,3 @@ func get_extension(path: String, include_period: bool = false) -> String:
 		return "." + extension
 	
 	return extension
-
-# TODO: Reword this description. The behaviour is like macOS.
-# Returns a file name with "copy" appened. If a file already exists with "copy" 
-# at the end, then it keeps incrementing a number suffix until one does not exist.
-# E.g "file copy.png", "file copy 2.png", "file copy 3.png" etc.
-func get_next_file_name(path: String) -> String:
-	var base_directory = path.get_base_dir()
-	var plain_name = get_file_name_without_extension(path)
-	var extension = get_extension(path, true)
-	
-	var copy_suffix = duplicate_regex.search(plain_name)
-	var name_without_suffix = duplicate_regex.sub(plain_name, "")
-	var tries: int = 2
-#
-	if copy_suffix:
-		var count = int(copy_suffix.get_string(1).strip_edges())
-		
-		if count != 0:
-			tries = count
-
-	var new_file_name = name_without_suffix + " copy" + extension
-
-	while exists(base_directory + "/" + new_file_name):
-		new_file_name = name_without_suffix + " copy " + str(tries) + extension
-		tries += 1
-	
-	return new_file_name

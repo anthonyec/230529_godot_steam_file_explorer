@@ -93,10 +93,9 @@ func duplicate_file(files: Array[File]) -> void:
 	var copy_arguments: Array = [];
 	
 	for file in files:
-		var new_file_name = FS.get_next_file_name(file.path)
+		var new_file_name = FileSystemProxy.get_next_file_name(file.path)
 		var base_directory = file.path.get_base_dir()
-		
-		FS.copy(file.path, base_directory + "/" + new_file_name)
+		FileSystemProxy.copy(file.path, base_directory + "/" + new_file_name)
 	
 	reload()
 	
@@ -132,7 +131,7 @@ func rename_file(file: File) -> void:
 
 func trash_file(files: Array[File]) -> void:
 	for file in files:
-		FS.trash(file.path)
+		FileSystemProxy.trash(file.path)
 
 	reload()
 	file_list.unselect_all()

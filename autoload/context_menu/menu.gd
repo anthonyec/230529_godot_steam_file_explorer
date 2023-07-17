@@ -10,6 +10,7 @@ signal close
 
 var target_path: String
 var is_closing: bool = false
+var items: Array = []
 
 func _ready() -> void:
 	connect("focus_exited", _on_focus_exited)
@@ -21,6 +22,7 @@ func _ready() -> void:
 			continue
 		
 		option_list.add_item(option.get("label", "<untitled>"))
+		items.append(option)
 		
 	option_list.grab_focus()
 	option_list.select(0)
@@ -90,7 +92,7 @@ func maximize_screen(window: Window) -> void:
 	window.position = Vector2i(0, 0)
 
 func invoke_action(index: int) -> void:
-	var option = options[index]
+	var option = items[index]
 	
 	if option.has("callback"):
 		if is_closing:

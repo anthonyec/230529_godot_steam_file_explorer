@@ -21,9 +21,9 @@ func enter(params: Dictionary) -> void:
 	browser.move_actions.visible = true
 	browser.grab_hand.appear()
 	
-	# Create file placeholder items.
 	var placeholders: Array[FilePlaceholder] = []
 	
+	# Create placeholder items.
 	for file in files:
 		var item = browser.file_list.get_item_by_id(file.id)
 		var rect = item.get_global_rect()
@@ -36,10 +36,10 @@ func enter(params: Dictionary) -> void:
 		browser.add_child(file_placeholder)
 		placeholders.append(file_placeholder)
 		
-	# Reverse placeholders so that the ones nearer the bottom animate first.
+	# Reversed so that the items nearer the bottom of the screen animate first.
 	placeholders.reverse()
 	
-	# Animate placeholders to hand.
+	# Animate placeholder items to hand.
 	for index in placeholders.size():
 		var placeholder = placeholders[index]
 		var tween = placeholder.create_tween()
@@ -55,8 +55,6 @@ func enter(params: Dictionary) -> void:
 		# Stagger animation between each placeholder.
 		await tween.tween_interval(0.1).finished
 		
-		# When each placeholder tween finishes add to grabbed placeholders list 
-		# and push hand.
 		tween.connect("finished", _on_placeholder_enter_tween_finished.bind(placeholder))
 		
 		# Wait for last item to finish it's tween before exiting loop.
@@ -66,10 +64,8 @@ func enter(params: Dictionary) -> void:
 func exit() -> void:
 	browser.move_actions.visible = false
 	
-	# Animate placeholders to back to original positions if possible.
 	var index = grabbed_placeholders.size() - 1
 	
-	# Loop backwards so that placeholders can be removed from array safely.
 	while index >= 0:
 		var placeholder = grabbed_placeholders[index]
 		
@@ -91,23 +87,22 @@ func exit() -> void:
 			tween.tween_property(placeholder, "modulate", Color(1, 1, 1, 0), 0.3)
 			tween.tween_property(placeholder, "scale", Vector2(1.1, 1.1), 0.3)
 			
-		# Otherwise  animate them to the size and position in the list.
+		# Otherwise animate them to the size and position in the list.
 		else:
 			var rect = item.get_global_rect()
 			tween.tween_property(placeholder, "position", rect.position, 0.3)
 			tween.tween_property(placeholder, "size", rect.size, 0.3)
 			tween.tween_property(placeholder, "rotation", 0, 0.3)
 		
-		# When each placeholder tween finishes fade out and remove.
 		tween.connect("finished", _on_placeholder_exit_tween_finished.bind(placeholder))
 		
 		# Only stagger animation if items exist in list.
 		if item != null or cancelled:
-			# Stagger animation between each placeholder.
 			# TODO: Find out why this does not work well with lower values than 0.1.
 			await tween.tween_interval(0.1).finished
 		
 		# Wait for last item to finish it's tween before exiting loop.
+		# TODO: Can this be replaced with `WaitGroup`?
 		if index == 0:
 			await tween.finished
 		
