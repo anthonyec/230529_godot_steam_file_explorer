@@ -36,10 +36,15 @@ static func new_from(files: Array[File]) -> Array[File]:
 	return new_files
 
 static func new_from_entry(entry: FS.Entry) -> File:
-	return File.new(entry.path, entry.is_directory, entry.size)
+	var new_file = File.new(entry.path, entry.is_directory, entry.size)
+	new_file.is_disabled = entry.is_transient
+	return new_file
 
 func set_file_name(value: String) -> void:
 	var previous_value = file_name
+	
+	if previous_value == value:
+		return
 	
 	file_name = value
 	changed.emit("file_name", previous_value, value)
@@ -47,23 +52,35 @@ func set_file_name(value: String) -> void:
 func set_extension(value: String) -> void:
 	var previous_value = extension
 	
+	if previous_value == value:
+		return
+	
 	extension = value
 	changed.emit("extension", previous_value, value)
 	
 func set_size(value: int) -> void:
 	var previous_value = extension
 	
+	if previous_value == value:
+		return
+	
 	size = value
-	changed.emit("sie", previous_value, value)
+	changed.emit("size", previous_value, value)
 	
 func set_is_directory(value: bool) -> void:
 	var previous_value = is_directory
+	
+	if previous_value == value:
+		return
 	
 	is_directory = value
 	changed.emit("is_directory", previous_value, value)
 	
 func set_is_disabled(value: bool) -> void:
 	var previous_value = is_disabled
+	
+	if previous_value == value:
+		return
 		
 	is_disabled = value
 	changed.emit("is_disabled", previous_value, value)
@@ -71,11 +88,17 @@ func set_is_disabled(value: bool) -> void:
 func set_is_selected(value: bool) -> void:
 	var previous_value = is_selected
 	
+	if previous_value == value:
+		return
+	
 	is_selected = value
 	changed.emit("is_selected", previous_value, value)
 	
 func set_is_invisible(value: bool) -> void:
 	var previous_value = is_invisible
+	
+	if previous_value == value:
+		return
 	
 	is_invisible = value
 	changed.emit("is_invisible", previous_value, value)

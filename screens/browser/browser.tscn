@@ -106,6 +106,7 @@ vertical_alignment = 1
 
 [node name="Files" parent="Panel/VBoxContainer" instance=ExtResource("2_wu4yh")]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 300)
 layout_mode = 2
 size_flags_vertical = 3
 

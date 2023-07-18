@@ -21,7 +21,7 @@ func _ready() -> void:
 		
 	modulate = Color(other_colors, other_colors, other_colors, opacity)
 	disabled = file.is_disabled
-#
+	
 	if file.is_directory:
 		icon_texture.texture = folder_icon_texture
 	else:
@@ -48,16 +48,16 @@ func _exit_tree() -> void:
 func _on_file_changed(property_name: String, _previous_value: Variant, _next_value: Variant) -> void:
 	if property_name == "is_selected":
 		var other_colors: float = 0.0 if file.is_selected else 1.0
-		var tween = get_tree().create_tween()
-		
+		var tween = create_tween()
+
 		tween.tween_property(self, "modulate", Color(other_colors, other_colors, other_colors, 1), 0.1)
 		tween.tween_property(self, "scale", Vector2(0.95, 0.95), 0.05)
 		tween.tween_property(self, "scale", Vector2(1, 1), 0.1)
-		
+
 	if property_name == "is_disabled":
 		var opacity: float = 0.2 if file.is_disabled else 1.0
-		var tween = get_tree().create_tween()
-		
+		var tween = create_tween()
+
 		tween.set_ease(Tween.EASE_IN_OUT)
 		tween.set_trans(Tween.TRANS_CUBIC)
 		tween.tween_property(self, "modulate", Color(1, 1, 1, opacity), 0.2)

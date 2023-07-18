@@ -7,6 +7,8 @@ signal item_selected(file: File)
 ## Emitted once all adding and removal animations for items have finished.
 signal animations_finished
 
+const ANIMATION_SPEED = 0.3
+
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var list: VBoxContainer = %List
 @onready var empty_state: CenterContainer = %EmptyState
@@ -114,20 +116,20 @@ func set_files(id: String, new_files: Array[File]) -> void:
 			
 			var target_size = item.custom_minimum_size
 			var tween = item.create_tween()
-			
+
 			# Add tween to list of animations to be played after adding items.
 			tween.stop()
 			tweens.append(tween)
-			
+
 			tween.set_ease(Tween.EASE_IN_OUT)
-			tween.set_trans(Tween.TRANS_EXPO)
-			tween.set_parallel(true)
-			tween.tween_property(item, "custom_minimum_size:y", target_size.y, 0.3).from(0)
-			
+			tween.set_trans(Tween.TRANS_SINE)
+#			tween.set_parallel(true)
+			tween.tween_property(item, "custom_minimum_size:y", target_size.y, ANIMATION_SPEED).from(0)
+
 			# Don't animate the opacity if the file is set to be invisible. 
 			# The invisible-ness of files is instant.
 			if not new_file.is_invisible:
-				tween.tween_property(item, "modulate", Color(1, 1, 1, 1), 0.3).from(Color(1, 1, 1, 0))
+				tween.tween_property(item, "modulate", Color(1, 1, 1, 1), ANIMATION_SPEED).from(Color(1, 1, 1, 0))
 			
 		file_ids[new_file.id] = true
 	
@@ -162,9 +164,9 @@ func set_files(id: String, new_files: Array[File]) -> void:
 		tweens.append(tween)
 		
 		tween.set_ease(Tween.EASE_IN_OUT)
-		tween.set_trans(Tween.TRANS_EXPO)
-		tween.tween_property(child, "modulate", Color(1, 1, 1, 0), 0.3)
-		tween.tween_property(child, "custom_minimum_size:y", 0, 0.3)
+		tween.set_trans(Tween.TRANS_SINE)
+		tween.tween_property(child, "modulate", Color(1, 1, 1, 0), ANIMATION_SPEED)
+		tween.tween_property(child, "custom_minimum_size:y", 0, ANIMATION_SPEED)
 		tween.tween_callback(func():
 			remove_item(child)
 		)
@@ -179,10 +181,8 @@ func set_files(id: String, new_files: Array[File]) -> void:
 	
 	for index in tweens.size():
 		var tween = tweens[index]
-		
 		animations.add()
 		tween.connect("finished", animations.done)
-		
 		tween.play()
 	
 func get_first_item() -> FileItem:
