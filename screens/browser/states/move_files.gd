@@ -64,6 +64,7 @@ func enter(params: Dictionary) -> void:
 func exit() -> void:
 	browser.move_actions.visible = false
 	
+	var first_file_id: String
 	var index = grabbed_placeholders.size() - 1
 	
 	while index >= 0:
@@ -104,11 +105,13 @@ func exit() -> void:
 		# Wait for last item to finish it's tween before exiting loop.
 		# TODO: Can this be replaced with `WaitGroup`?
 		if index == 0:
+			first_file_id = file_id
 			await tween.finished
 		
 		index -= 1
 	
 	browser.grab_hand.disappear()
+	browser.file_list.focus_file_by_id(first_file_id)
 
 func update(_delta: float) -> void:
 	# Once a placeholder has been animated, is it then always positioned where the hand is.
@@ -139,7 +142,7 @@ func _on_placeholder_exit_tween_finished(placeholder: FilePlaceholder) -> void:
 	var tween = placeholder.create_tween()
 	
 	# Show the file once the placeholder animation is finished.
-	var id := File.get_id_from_path(browser.current_path + "/" + placeholder.file.file_name)
+	var id = File.get_id_from_path(browser.current_path + "/" + placeholder.file.file_name)
 	browser.file_list.set_visible_file(id)
 	
 	# Fade out and remove.
