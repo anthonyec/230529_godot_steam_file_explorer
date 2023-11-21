@@ -8,15 +8,16 @@ extends Control
 var current_screen: Window = null
 
 func _ready() -> void:
-	var init: Dictionary = Steam.steamInit(false)
+	return
+#	var init: Dictionary = Steam.steamInit(false)
 	
-	print(init);
+#	print(init);
 	
-	debug_console.text += "Steam ID: " + str(Steam.getSteamID())
+#	debug_console.text += "Steam ID: " + str(Steam.getSteamID())
 	
 	await get_tree().create_timer(5).timeout
 	
-	Steam.showGamepadTextInput(Steam.GAMEPAD_TEXT_INPUT_MODE_NORMAL, Steam.GAMEPAD_TEXT_INPUT_LINE_MODE_SINGLE_LINE, "Rename file", 256, "File name")
+#	Steam.showGamepadTextInput(Steam.GAMEPAD_TEXT_INPUT_MODE_NORMAL, Steam.GAMEPAD_TEXT_INPUT_LINE_MODE_SINGLE_LINE, "Rename file", 256, "File name")
 	
 #	await get_tree().create_timer(10).timeout
 #
@@ -26,7 +27,8 @@ func _ready() -> void:
 	
 	
 func _process(_delta: float) -> void:
-	Steam.run_callbacks()
+	return
+#	Steam.run_callbacks()
 
 func open_screen(screen_name: String, path: String) -> void:
 	var screen_resource: Resource = load("res://screens/" + screen_name + "/" + screen_name + ".tscn")
