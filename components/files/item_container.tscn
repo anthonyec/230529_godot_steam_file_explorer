@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://pqynv3shiiip"]
+
+[node name="ItemContainer" type="Panel"]
+custom_minimum_size = Vector2(2.08165e-12, 60)
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+size_flags_horizontal = 3

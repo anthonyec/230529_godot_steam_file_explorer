@@ -8,8 +8,9 @@
 
 [node name="File" type="Button"]
 custom_minimum_size = Vector2(200, 60)
-offset_right = 200.0
-offset_bottom = 60.0
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
 mouse_filter = 1
 theme_override_styles/normal = ExtResource("1_rmsl5")
 theme_override_styles/hover = ExtResource("1_rmsl5")
@@ -28,9 +29,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
